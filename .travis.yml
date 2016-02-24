@@ -28,7 +28,7 @@ before_install:
 - sudo apt-get install python-mpltoolkits.basemap python-mpltoolkits.basemap-data
 
 # projection libraries
-#- sudo apt-get install libgeos-dev libproj-dev
+- sudo apt-get install libgeos-dev libproj-dev
 
 # testing environment
 - pip install coveralls pytest-cov
@@ -56,7 +56,7 @@ before_install:
 # cartopy dependencices
 - sudo pip install shapely
 - sudo pip install pyshp
-#- sudo pip install six
+- sudo pip install six
 - sudo pip install cython
 - sudo pip install cartopy
 
