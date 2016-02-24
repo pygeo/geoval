@@ -48,10 +48,7 @@ before_install:
 #cp setup.cfg.template setup.cfg
 #popd
 
-# installs now netCDF4 > 1.1.3 from pip
 - sudo pip install netCDF4
-
-
 
 # cartopy dependencices
 - sudo pip install shapely
