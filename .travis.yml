@@ -62,11 +62,9 @@ before_install:
 
 # do actual installation
 
-xxxx
-
-- sudo /usr/bin/python setup.py install
-#- sudo /usr/bin/python setup.py build_ext  does not work yet!
-- sudo sh compile_extensions.sh
+#- sudo /usr/bin/python setup.py install
+#####- sudo /usr/bin/python setup.py build_ext  does not work yet!
+#- sudo sh compile_extensions.sh
 
 script:
 - nosetests --with-coverage --cover-package=pycmbs
