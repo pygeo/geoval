@@ -64,7 +64,7 @@ before_install:
 #- sudo sh compile_extensions.sh
 
 script:
-- nosetests --with-coverage --cover-package=pycmbs
+- nosetests --with-coverage --cover-package=geoval
 
 after_success:
 - coveralls

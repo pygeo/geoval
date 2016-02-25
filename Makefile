@@ -15,6 +15,7 @@ clean :
 	find . -name "*.pyc" -exec rm -rf {} \;
 	find . -name "y.pkl" -exec rm -rf {} \;
 	find . -name "*.so" -exec rm -rf {} \;
+	find . -name "polygon_utils.c" -exec rm -rf {} \;
 	find . -name "data_warnings.log" -exec rm -rf {} \;
 	rm -rf C:*debuglog.txt
 	rm -rf build
