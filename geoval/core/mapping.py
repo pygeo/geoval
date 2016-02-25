@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-This file is part of pyCMBS  and edited for use with ESMValTool
-(c) 2012- Alexander Loew
+This file is part of GEOVAL  and edited for use with ESMValTool
+(c) 2016- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
-"""
-EDITS:
-2015-12-17:     - commented pycmbs Polygon due to errors!
-                - Data.data is changed to Data.content. Errors might occur.
-                (BM)
-2016-01-21:     - commented unnecessary code. Mainly no CARTOPY!
-                (BM)
-"""
 
 """
 This module implements generic map plotting capabilities
@@ -43,7 +35,7 @@ try:
     installed_backends.append('imshow')
 except:
     raise ValueError(
-        'Fatal error: You need to have a valid matplotlib installation to be able to work with pycmbs')
+        'Fatal error: You need to have a valid matplotlib installation to be able to work with GEOVAL')
 
 import matplotlib as mpl
 import numpy as np
@@ -54,8 +46,7 @@ import numpy as np
 # from matplotlib.collections import PatchCollection
 
 from data import Data
-#from pycmbs.plots import ZonalPlot
-#from pycmbs.polygon_utils import Polygon
+
 
 
 class MapPlotGeneric(object):

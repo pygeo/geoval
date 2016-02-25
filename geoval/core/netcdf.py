@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This file is part of pyCMBS  and edited for use with ESMValTool
-(c) 2012- Alexander Loew
+This file is part of GEOVAL  and edited for use with ESMValTool
+(c) 2016- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 """

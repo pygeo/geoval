@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 """
-This file is part of pyCMBS  and edited for use with ESMValTool
-(c) 2012- Alexander Loew
+This file is part of GEOVAL  and edited for use with ESMValTool
+(c) 2016- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
 """
 EDITS:
 2015-12-17:     - changed .data to .data to avoid Data.data.data to assess values
-                - commented pycmbs Polygon due to errors!
+                - commented geoval Polygon due to errors!
                 (BM)
 2016-01-21:     - commented unnecessary code.
                 (BM)
@@ -23,7 +23,7 @@ from netcdf import NetCDFHandler
 # from polygon import Raster
 
 # commented due to RT Errors
-# from polygon import Polygon as pycmbsPolygon
+# from polygon import Polygon as geovalPolygon
 
 # core libraries
 import numpy as np
@@ -37,7 +37,7 @@ from calendar import monthrange
 
 from geoval.statistic import get_significance, ttest_ind
 from geoval.polygon import Raster
-from geoval.polygon import Polygon as pycmbsPolygon
+from geoval.polygon import Polygon as geovalPolygon
 
 
 # external dependencies
@@ -811,7 +811,7 @@ class GeoData(object):
         -------
         returns distance [m]
         """
-        from pycmbs.grid import Grid
+        from geoval.grid import Grid
         assert hasattr(self, 'lat')
         assert hasattr(self, 'lon')
         if not isinstance(self.lat, np.ndarray):
@@ -3490,7 +3490,7 @@ class GeoData(object):
         # perform rasterization
         if f_rasterize:
             polylist = []
-            polylist.append(pycmbsPolygon(r.id, zip(r.lon, r.lat)))
+            polylist.append(geovalPolygon(r.id, zip(r.lon, r.lat)))
 
             print '   ... rasterizing'
             M = Raster(self.lon, self.lat)
