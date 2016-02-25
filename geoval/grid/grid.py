@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This file is part of pyCMBS.
-(c) 2012- Alexander Loew
+This file is part of GEOVAL.
+(c) 2016- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
@@ -11,8 +11,9 @@ MODULE for spatial grid manipulations
 
 import numpy as np
 import matplotlib.delaunay as triang
-from matplotlib import pylab as pl
+#from matplotlib import pylab as pl
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 import matplotlib.patches as mpatches
 import matplotlib.path as mpath
@@ -78,7 +79,7 @@ class Grid(object):
 
     def plot(self, ax=None):
         if ax is None:
-            fig = pl.figure()
+            fig = plt.figure()
             ax = fig.add_subplot(111)
         ax.plot(self.lon, self.lat, 'x')
 
@@ -86,7 +87,7 @@ class Grid(object):
         if not self._interpolated:
             self._delaunay_triangulation()
         if ax is None:
-            fig = pl.figure()
+            fig = plt.figure()
             ax = fig.add_subplot(111)
 
         for e in self.edg:
@@ -134,7 +135,7 @@ class Grid(object):
 
     def plot_voronoi(self, ax=None, show_latlon=True):
         if ax is None:
-            fig = pl.figure()
+            fig = plt.figure()
             ax = fig.add_subplot(111)
 
         # calculate half size position of each edge and
@@ -163,7 +164,7 @@ class Grid(object):
 
     def plot_delaunay_grid(self, ax=None, show_latlon=True):
         if ax is None:
-            fig = pl.figure()
+            fig = plt.figure()
             ax = fig.add_subplot(111)
         if not self._interpolated:
             self._delaunay_triangulation()
@@ -191,7 +192,7 @@ class Grid(object):
             path = mpath.Path(verts, codes, closed=True)
             patches.append(mpatches.PathPatch(path))
 
-        cmap = pl.cm.get_cmap('jet', 50)
+        cmap = plt.cm.get_cmap('jet', 50)
         norm = mpl.colors.Normalize(vmin=None, vmax=None)  # colorbar mapping
         # construct library of all objects
         self._collection = PatchCollection(patches, cmap=cmap, norm=norm,

@@ -9,24 +9,16 @@ from __future__ import division
 
 STUFF = "Hello world"  # this is done to avoid this problem: http://stackoverflow.com/questions/8024805/cython-compiled-c-extension-importerror-dynamic-module-does-not-define-init-fu
 
-
-
 #http://docs.cython.org/src/tutorial/numpy.html#efficient-indexing
 import numpy as np
 import copy
 try:
     from osgeo import ogr
 except:
-    print 'WARNING: import of OSGEO did not work. Could cause trouble in usage of polygon funcitonalities!'
+    print('WARNING: import of OSGEO did not work. Could cause trouble in usage of polygon funcitonalities!')
 
 cimport numpy as np
-
 ctypedef np.double_t DTYPE_t  # double type for numpy arrays
-
-
-
-
-
 
 
 cdef class Polygon(object):

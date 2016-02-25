@@ -15,7 +15,6 @@ import itertools
 THE_POLYGONS = None
 THE_MASK = None
 
-
 def argument_mapper_rasterize(x):
 
     _rasterize_polygon(x[0], x[1], x[2], x[3])

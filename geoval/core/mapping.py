@@ -39,14 +39,7 @@ except:
 
 import matplotlib as mpl
 import numpy as np
-
-# import matplotlib.gridspec as grd
-# import matplotlib.path as mpath
-# import matplotlib.patches as mpatches
-# from matplotlib.collections import PatchCollection
-
 from data import Data
-
 
 
 class MapPlotGeneric(object):
