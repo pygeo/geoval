@@ -1,9 +1,4 @@
-* installation routine, including also compilation of poylgon utils
-
-
-
-
-* move also test routines from pycmbs
+* run ALL pycmbs tests
 
 
 

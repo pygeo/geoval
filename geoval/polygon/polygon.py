@@ -6,8 +6,8 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
 import numpy as np
-from geoval.polygon.polygon_utils import Polygon
-from geoval.polygon.polygon_utils import get_point_in_poly_mask
+from polygon_utils import Polygon
+from polygon_utils import get_point_in_poly_mask
 
 import multiprocessing
 import itertools
