@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-This file is part of pyCMBS.
+This file is part of GEOVAL.
 (c) 2012- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
 import unittest
-from pycmbs import region
+from geoval import region
 
-from pycmbs.region import RegionParser
-from pycmbs.region import RegionPolygon
-from pycmbs.region import RegionBboxLatLon
-from pycmbs.region import RegionIndex
-from pycmbs.region import RegionGeneric
+from geoval.region import RegionParser
+from geoval.region import RegionPolygon
+from geoval.region import RegionBboxLatLon
+from geoval.region import RegionIndex
+from geoval.region import RegionGeneric
 from nose.tools import assert_raises
 import os
 import numpy as np
@@ -21,7 +21,7 @@ import numpy as np
 import tempfile
 import os
 import shapefile
-from pycmbs.region import RegionShape
+from geoval.region import RegionShape
 
 
 class TestRegion(unittest.TestCase):

@@ -8,7 +8,7 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 from unittest import TestCase
 import unittest
 
-from pycmbs.data import Data
+from geoval.core.data import GeoData
 import scipy as sc
 import matplotlib.pylab as pl
 import numpy as np
@@ -24,7 +24,7 @@ from geoval.polygon import Polygon, Raster
 class TestData(unittest.TestCase):
 
     def setUp(self):
-        self.D = Data(None, None)
+        self.D = GeoData(None, None)
         self.D._init_sample_object(nt=1000, ny=1, nx=1)
 
 
