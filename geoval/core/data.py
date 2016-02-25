@@ -1424,6 +1424,7 @@ class GeoData(object):
                     res = k
                     cnt += 1
             if cnt == 0:
+                print('WARNING: no default name for lat/lon could be idntified!')
                 res = None
             elif cnt == 1:
                 res = res
