@@ -17,6 +17,12 @@ before_install:
 # general setup
 - sudo apt-get install python-pip python-dev
 
+
+# now install package with pip and the uninstall it again
+#- sudo pip install geoval
+
+
+
 # latex environment
 #- sudo apt-get install texlive-latex-base texlive-latex-extra texlive-latex-recommended
 
