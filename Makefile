@@ -1,5 +1,5 @@
 #######################################
-# This file is part of pyCMBS
+# This file is part of GEOVAL
 #######################################
 
 # XXX: machine specific paths
@@ -45,6 +45,12 @@ upload_docs:
 
 dependencies : clean
 	sh compile_extensions.sh
+
+upload_pip:
+	# ensure that pip version has always counterpart on github
+	git push origin master
+	# note that this requres .pypirc file beeing in home directory
+	python setup.py sdist upload
 
 
 

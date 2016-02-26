@@ -6,6 +6,7 @@ virtualenv:
 branches:
     only:
         - master
+
 before_install:
 
 # todo

@@ -1,6 +1,7 @@
 * check what installation options can be removed
 
-* pip installation of geoval in pycmbs
+
+* remove mapping.py in pycmbs
 
 
 
