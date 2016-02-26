@@ -49,6 +49,10 @@ ext_polygon_utils = Extension('polygon_utils',
                               )
 
 
+def get_current_version():
+    ppath = os.path.dirname(os.path.realpath(__file__))
+    return json.load(open(ppath + os.sep + 'geoval' + os.sep + 'version.json'))
+
 def get_packages():
     #find_packages(exclude=['contrib', 'docs', 'tests*']),
     return find_packages()
@@ -56,7 +60,7 @@ def get_packages():
 
 setup(name='geoval',
 
-      version='0.1-dev',
+      version=get_current_version(),
 
       description='geoval - python based geodata evaluation package',
 
