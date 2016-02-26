@@ -56,7 +56,7 @@ def get_packages():
 
 setup(name='geoval',
 
-      version='0.1',
+      version='0.1-dev',
 
       description='geoval - python based geodata evaluation package',
 

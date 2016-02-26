@@ -40,6 +40,9 @@ dist : clean
 build_docs:
 	python setup.py build_sphinx
 
+update_version:
+	python autoincrement_version.py
+
 upload_docs:
 	python setup.py upload_sphinx
 
