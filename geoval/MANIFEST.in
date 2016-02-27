@@ -1,0 +1,11 @@
+global-include LICENSE
+global-include *.rst
+global-include *.py
+global-include setup.cfg
+global-include version.json
+graft tests
+prune build
+prune test_eof
+prune dist
+recursive-exclude tests
+graft doc
