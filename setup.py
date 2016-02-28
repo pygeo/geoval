@@ -38,7 +38,7 @@ from Cython.Build import cythonize
 
 # requires scipy:
 # http://stackoverflow.com/questions/11128070/cannot-import-minimize-in-scipy
-install_requires = ["numpy>0.1", "cdo>1.5", "netCDF4", "pytz",
+install_requires = ["numpy>0.1", "cdo>1.2", "netCDF4", "pytz",
                     "matplotlib", 'shapely', 'cartopy', 'cython', 'scipy']
 
 #~ ext_polygon_utils = Extension('polygon_utils',

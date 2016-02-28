@@ -65,7 +65,6 @@ before_install:
 - sudo pip install cartopy
 
 # do actual installation
-
 - sudo /usr/bin/python setup.py build_ext --inplace install
 #####- sudo /usr/bin/python setup.py build_ext  does not work yet!
 # - sudo sh compile_extensions.sh
