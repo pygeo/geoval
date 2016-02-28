@@ -32,21 +32,22 @@ import json
 from setuptools import setup, Extension
 from setuptools import find_packages  # Always prefer setuptools over distutils
 from Cython.Distutils import build_ext
+from Cython.Build import cythonize
 
 
 
 # requires scipy:
 # http://stackoverflow.com/questions/11128070/cannot-import-minimize-in-scipy
-install_requires = ["numpy>0.1", "cdo>1.2", "netCDF4", "pytz",
+install_requires = ["numpy>0.1", "cdo>1.5", "netCDF4", "pytz",
                     "matplotlib", 'shapely', 'cartopy', 'cython', 'scipy']
 
-ext_polygon_utils = Extension('polygon_utils',
-                              sources=['.' + os.sep + 'geoval' + os.sep + 'polygon' +
-                                       os.sep + 'polygon_utils.pyx'],
-                              # this is needed to get proper information on
-                              # numpy headers
-                              include_dirs=[np.get_include()]
-                              )
+#~ ext_polygon_utils = Extension('polygon_utils',
+                              #~ sources=['.' + os.sep + 'geoval' + os.sep + 'polygon' +
+                                       #~ os.sep + 'polygon_utils.pyx'],
+                              #~ # this is needed to get proper information on
+                              #~ # numpy headers
+                              #~ include_dirs=[np.get_include()]
+                              #~ )
 
 
 def get_current_version():
@@ -80,14 +81,9 @@ setup(name='geoval',
 
       license='APACHE 2',
 
-      url='https://github.com/pygeo/pycmbs',
+      url='https://github.com/pygeo/geoval',
 
-      long_description='The pyCMBS project is a suite of tools to \
-                    process, analyze, visualize and benchmark \
-                    scientific model output against each other or \
-                    against observational data. It is in particular \
-                    useful for analyzing in an efficient way output \
-                    from climate model simulations.',
+      long_description='xxxx',
 
       # List run-time dependencies here. These will be installed by pip when your
       # project is installed. For an analysis of "install_requires" vs pip's
@@ -129,9 +125,17 @@ setup(name='geoval',
           'Programming Language :: Python :: 2.7'
       ],
 
-      ext_modules=[ext_polygon_utils],
-      cmdclass={'build_ext': build_ext}
+      #~ ext_modules=[ext_polygon_utils],
+      #~ cmdclass={'build_ext': build_ext}
+
+    ext_modules=cythonize(
+        ["./geoval/polygon/polygon_utils.pyx"]),
+    # this is needed to get proper information on numpy headers
+    include_dirs=[np.get_include()]
+
       )
+
+
 
 
 ########################################################################
