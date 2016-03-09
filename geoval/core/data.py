@@ -34,6 +34,7 @@ import datetime
 import calendar
 import pickle
 from calendar import monthrange
+import tempfile
 
 from geoval.statistic import get_significance, ttest_ind
 from geoval.polygon import Raster
@@ -90,6 +91,8 @@ class GeoData(object):
         time_cycle=kwargs.pop('time_cycle', None)
 
         self.inmask = kwargs.pop('mask', None)
+
+        self._calc_cell_area = kwargs.pop('calc_cell_area', True)
 
 
         if time_cycle is not None:
