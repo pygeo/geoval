@@ -1285,9 +1285,6 @@ class GeoData(object):
             else:
                 self._set_timecycle()
 
-
-
-
     def _convert_time(self):
         """
         convert time that was given as YYYYMMDD.f
@@ -1445,6 +1442,8 @@ class GeoData(object):
         # read lat field
         if self.lat_name is None:
             self.lat_name = _get_default_name(F, lat_defaults)
+
+
         if self.lat_name is None:
             self.lat = None
         else:
@@ -1488,6 +1487,7 @@ class GeoData(object):
 
         if self.lat is None:
             print('*** WARNING!!! No coordinates available!')
+
 
 
     def get_zonal_mean(self, return_object=False):
