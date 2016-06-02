@@ -8,11 +8,12 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 
 """
 EDITS:
-2015-12-17:     - changed .data to .data to avoid Data.data.data to assess values
+2015-12-17:     - changed .data to .content to avoid Data.data.data to assess values
                 - commented geoval Polygon due to errors!
                 (BM)
 2016-01-21:     - commented unnecessary code.
                 (BM)
+2016-03-31:     - rechanged .content to .data due to geoval
 """
 
 import os
@@ -1000,7 +1001,7 @@ class GeoData(object):
                 return
 
         # in case that cell area shall explicitely NOT be caluclated
-        if not self._calc_cell_area:
+        if not self.cell_area:
             if self.ndim == 2:
                 self.cell_area = np.ones(self.data.shape)
             elif self.ndim == 3:
@@ -4793,3 +4794,76 @@ class GeoData(object):
         self.time_str = 'days since 0001-01-01 00:00:00'
         # plus one because of the num2date() basedate definition
         self.time = plt.date2num(newtime) + 1.
+
+                                                
+    def get_shape_statistics(self,regions): #written before geoval was implemented
+        """
+        get statistical information for different polygons in shapefile
+        Parameters
+        ----------
+        regions : masks for masked array
+        """
+        
+        self.regionalized=dict()
+        regname=regions.keys()
+        
+        for s in np.arange(len(regions)):
+            loc_content=self.data.copy()
+            loc_content.mask=regions[regname[s]]
+            self.regionalized[regname[s]]=[np.nanmin(loc_content),
+                                            np.nanmean(loc_content),
+                                            np.nanmax(loc_content),
+                                            np.nanstd(loc_content)
+                                            ]
+                                            
+    def get_regions(self,shape,column=0): #written before geoval was implemented
+        """
+        get setup for statistical information for different polygons in shapefile
+        caution: slow for complex polygons         
+        Parameters
+        ----------
+        shape : shp.Reader (shapefile.Reader)
+            information on areas from a classic ESRI shapefile
+        """
+        assert isinstance(shape,shp.Reader)
+        
+        
+        def point_in_poly(point,poly):
+            """ function to find points within polygon """ 
+            n = len(poly)
+            inside = False
+        
+            p1x,p1y = poly[0]
+            for i in range(n+1):
+                p2x,p2y = poly[i % n]
+                if point[1] > min(p1y,p2y):
+                    if point[1] <= max(p1y,p2y):
+                        if point[0] <= max(p1x,p2x):
+                            if p1y != p2y:
+                                xints = (point[1]-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                            if p1x == p2x or point[0] <= xints:
+                                inside = not inside
+                p1x,p1y = p2x,p2y
+        
+            return inside
+        
+        regions=dict()
+        regname=np.array(shape.records())[:,column] 
+        
+        for s in np.arange(len(shape.shapes())):
+            loc_poly = shape.shapes()[s].points
+            if len(self.shape) == 3:
+                loc_mask=self.data[0,:,:].mask.copy()
+            elif len(self.shape) == 2:
+                loc_mask=self.data.mask.copy()
+            else :
+                assert False, "wrong data dimensions"
+            for i in np.arange(self.shape[0] if len(self.shape) == 2 else self.shape[1]):
+                for j in np.arange(self.shape[1] if len(self.shape) == 2 else self.shape[2]):
+                    ll=[self.lon[i,j] if self.lon[i,j]<180 else self.lon[i,j]-180,self.lat[i,j]]
+                    loc_mask[i,j]=loc_mask[i,j] and not point_in_poly(ll,loc_poly)
+
+            
+            regions[regname[s]]=loc_mask
+            
+        return regions
