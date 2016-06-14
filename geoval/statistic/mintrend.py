@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+import matplotlib.pyplot as plt
 
 """
 Minimum detectable trend analysis
@@ -44,10 +45,10 @@ class Mintrend(object):
         """
 
         self._res_trend, self._res_frac = self._calculate_significant_trend_fractions(pthres)
-        print ''
-        print 'Trend: ', self._res_trend
-        print 'Frac: ', self._res_frac
-        print 'Selection: ', self._res_trend[self._res_frac>= thres]
+        #~ print ''
+        #~ print 'Trend: ', self._res_trend
+        #~ print 'Frac: ', self._res_frac
+        #~ print 'Selection: ', self._res_trend[self._res_frac>= thres]
         return self._res_trend[self._res_frac >= thres].min()
 
 
@@ -58,17 +59,12 @@ class Mintrend(object):
         thetrend = []
         fraction = []  # fraction of trends above significance threshold
         for trend  in self.trends:
-            #print trend
             T = TrendModel(self.t, self.mean, self.cv, trend, self.N)
-
             # calculate now the significances for the given trend
             P = T.calc_trend_significances()
-
             thetrend.append(trend)
             fraction.append(float(len(P[P<pthres])) / float(self.N))
         return np.asarray(thetrend), np.asarray(fraction)
-
-
 
 
 class TrendModel(object):
@@ -151,17 +147,17 @@ class TrendModel(object):
         return p
 
 
+plt.close('all')
 
 
 
 
 t = np.arange(1951,2001,1)
-N = 100
+N = 10
 trends = np.arange(1.,21.,0.1)  # todo: do faster by Newton itteration --> not all trends need to be calculated
 
-means = np.linspace(100.,1000.,10)
-cvs = np.linspace(0.1,1.,5)
-
+means = np.linspace(100.,1000.,20)
+cvs = np.linspace(0.1,1.,10)
 
 nmeans = len(means)
 ncvs = len(cvs)
@@ -171,12 +167,25 @@ MT = np.ones((nmeans,ncvs))*np.nan
 for i in xrange(nmeans):
 
     for j in xrange(ncvs):
-        #M = Mintrend(t, means[i], cvs[j], trends=trends, N=N)
-        M = Mintrend(t, 600., 0.2, trends=trends, N=N)
+        M = Mintrend(t, means[i], cvs[j], trends=trends, N=N)
+        #M = Mintrend(t, 600., 0.2, trends=trends, N=N)
         MT[i,j] = M.get_mintrend()
-        print means[i], cvs[j], MT[i,j]
+        print means[i], cvs[j] #, MT[i,j]
 
 
+# generate plot
+levels=np.arange(2.,20,2)
+f = plt.figure()
+ax = f.add_subplot(111)
+CS = ax.contour(means, cvs, MT.T, levels=levels)
+plt.clabel(CS, inline=1, fontsize=10)
+ax.grid()
+ax.set_xlabel('mean value')
+ax.set_ylabel('CV')
+ax.set_title('minimum detectable trend')
+
+
+plt.show()
 
 
 #~ T = TrendModel(t, 600., 0.2, 10./10., N)  # todo 10mm/decade ...
