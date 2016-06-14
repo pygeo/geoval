@@ -147,7 +147,7 @@ class TrendModel(object):
         return p
 
 
-plt.close('all')
+#~ plt.close('all')
 
 
 
@@ -183,9 +183,10 @@ ax.grid()
 ax.set_xlabel('mean value')
 ax.set_ylabel('CV')
 ax.set_title('minimum detectable trend')
+f.savefig('mintrend_contour.png', dpi=300)
+plt.close('all')
 
-
-plt.show()
+#~ plt.show()
 
 
 #~ T = TrendModel(t, 600., 0.2, 10./10., N)  # todo 10mm/decade ...
