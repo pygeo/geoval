@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 
 t = np.arange(1951,2001,1).astype('float')
-N = 1000
+N = 10000
 trends = np.arange(1.,21.,0.1)
 
 means = np.linspace(100.,1000.,20)
@@ -28,7 +28,7 @@ for i in xrange(nmeans):
         MT[i,j] = M.get_mintrend()
         print means[i], cvs[j] #, MT[i,j]
 
-cPickle.dump({'means' : means, 'cvs' : cvs, 'res' : MT},open('results.pkl','w'))
+cPickle.dump({'means' : means, 'cvs' : cvs, 'res' : MT},open('results_' + str(N) + '.pkl','w'))
 
 
 # generate plot
@@ -40,7 +40,7 @@ plt.clabel(CS, inline=1, fontsize=10)
 ax.grid()
 ax.set_xlabel('mean value')
 ax.set_ylabel('CV')
-ax.set_title('minimum detectable trend')
-f.savefig('mintrend_contour.png', dpi=300)
+ax.set_title('minimum detectable trend (N=' + str(N) + ')')
+f.savefig('mintrend_contour_' + str(N) + '.png', dpi=300)
 plt.close('all')
 

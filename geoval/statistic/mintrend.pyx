@@ -233,7 +233,7 @@ cdef class TrendModel(object):
             #pool.close()
 
 
-            pool = multiprocessing.Pool(processes=max(nproc,N))
+            pool = multiprocessing.Pool(processes=min(nproc,N))
 
 #~             nd(np.ndarray[DTYPE_t, ndim=1] t, double intercept, double trend, double sigma):
 
