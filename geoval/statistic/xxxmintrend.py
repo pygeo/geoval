@@ -136,6 +136,7 @@ class TrendModel(object):
 
     def _pearson_correlation(self, t, y):
         assert False
+        p = 1.
         return p
 
     def _mann_kendall_correlation(self, t, y):
@@ -144,6 +145,7 @@ class TrendModel(object):
 
     def _spearman_correlation(self, t, y):
         assert False
+        p = 1.
         return p
 
 
