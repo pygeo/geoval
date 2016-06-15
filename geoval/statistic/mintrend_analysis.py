@@ -1,3 +1,7 @@
+"""
+produce example like in MORIN (2011)
+"""
+
 import pyximport; pyximport.install()
 
 from mintrend import *
@@ -5,20 +9,19 @@ import cPickle
 
 import matplotlib
 matplotlib.use('Agg')
-
 import matplotlib.pyplot as plt
 
-
+# PARAMETERS
+N = 10000 # number of ensemble members
 t = np.arange(1951,2001,1).astype('float')
-N = 10000
-trends = np.arange(1.,21.,0.1)
 
+trends = np.arange(1.,21.,0.1)
 means = np.linspace(100.,1000.,20)
 cvs = np.linspace(0.1,1.,10)
 
+# processing ...
 nmeans = len(means)
 ncvs = len(cvs)
-
 MT = np.ones((nmeans,ncvs))*np.nan
 
 for i in xrange(nmeans):
@@ -28,8 +31,8 @@ for i in xrange(nmeans):
         MT[i,j] = M.get_mintrend()
         print means[i], cvs[j] #, MT[i,j]
 
+# save results
 cPickle.dump({'means' : means, 'cvs' : cvs, 'res' : MT},open('results_' + str(N) + '.pkl','w'))
-
 
 # generate plot
 levels=np.arange(2.,20,2)
