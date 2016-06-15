@@ -6,6 +6,7 @@ cimport numpy as np
 
 #~ import numpy as np
 from scipy import stats
+import multiprocessing
 
 
 ctypedef np.double_t DTYPE_t  # double type for numpy arrays
@@ -17,6 +18,44 @@ References
 ----------
 * Morin (2011): To know what we cannot know ... doi:10.1029/2010WR009798
 """
+
+
+#~ def unwrap_trend_analysis(arg, **kwarg):
+#~     #return TrendModel._calculate_trend(*arg, **kwarg)
+#~     return TrendModel._info(*arg, **kwarg)
+
+
+def calculate_trend(X):
+        """
+        generate random time series and return
+        significance of trends
+        """
+
+        cdef double p, tau
+        cdef np.ndarray[DTYPE_t, ndim=1] y,t
+        cdef double intercept, trend, sigma
+
+        t = X[0]
+        intercept = X[1]
+        trend = X[2]
+        sigma = X[3]
+
+#~         print 'SIGMA: ', sigma
+#~         print 'TREND: ', trend
+#~         print 'INTERCEEPT: ', intercept
+
+        #print 'intercept: ', self.intercept
+        #print 'slope: ', self.trend
+
+        # generate timeseries with random normal distributed noise (eq.1, eq 7)
+        y = intercept + trend * t + np.random.randn(len(t))*sigma
+
+        # calculate trend using Kendall-Tau method
+        tau, p = stats.kendalltau(t,y)
+
+        return p
+
+
 
 cdef class Mintrend(object):
 
@@ -64,7 +103,11 @@ cdef class Mintrend(object):
         cdef np.ndarray[DTYPE_t, ndim=1] res_frac
 
         res_trend, res_frac = self._calculate_significant_trend_fractions(pthres)
-        return res_trend[res_frac >= thres].min()
+        tmp = res_trend[res_frac >= thres]
+        if len(tmp) > 0:
+            return tmp.min()
+        else:
+            return np.nan
 
 
     def _calculate_significant_trend_fractions(self, double pthres):
@@ -93,7 +136,6 @@ cdef class TrendModel(object):
     cdef object t
     cdef double tmean, intercept, sigma
     cdef str method
-    cdef object _trend_estimate
 
     def __init__(self, np.ndarray[DTYPE_t, ndim=1] t, double mean, double cv, double trend, int N, method='mann_kendall'):
         """
@@ -115,29 +157,56 @@ cdef class TrendModel(object):
 
         self._set_model_parameters()
         self.method = method
-        self._set_trend_model()
+#~         self._set_trend_model()
 
-    def _set_trend_model(self):
-        if self.method == 'spearman':
-            self._trend_estimate = self._spearman_correlation
-        elif self.method == 'mann_kendall':
-            self._trend_estimate = self._mann_kendall_correlation
-        elif self.method == 'pearson':
-            self._trend_estimate = self._pearson_correlation
+#~     def _set_trend_model(self):
+#~         if self.method == 'spearman':
+#~             self._trend_estimate = self._spearman_correlation
+#~         elif self.method == 'mann_kendall':
+#~             self._trend_estimate = self._mann_kendall_correlation
+#~         elif self.method == 'pearson':
+#~             self._trend_estimate = self._pearson_correlation
 
     def _set_model_parameters(self):
         """
         set the statistical model parameters
         """
         cdef np.ndarray[DTYPE_t, ndim=1] t  # local variable for speed increas
+        cdef tmp
+
+#~         print self.cv, self.mean, self.trend,
+
+#~
+#~         self.mean = 600.
+#~         self.cv = 0.2
+#~         self.trend = 1.
+
+
+
         t = self.t
         self.tmean = t.mean()
-        self.intercept = self.mean - self.trend * self.tmean  # eq.5
-        self.sigma = np.sqrt(self.cv**2. * self.mean**2. - self.trend**2. * self.t.var())
 
-    def calc_trend_significances(self):
+
+        tmp = self.cv**2. * self.mean**2. - self.trend**2. * t.var()
+
+        self.intercept = self.mean - self.trend * self.tmean  # eq.5
+        if tmp <=0.:
+            #print tmp, self.mean, self.cv, self.trend, t.var()
+            self.sigma = np.nan
+        else:
+            self.sigma = np.sqrt(tmp)
+
+
+
+
+    def calc_trend_significances(self, nproc=24):
         """
         calculate trend significances for N realizations
+
+        Parameters
+        ----------
+        nproc : int
+            number of processors to use
         """
         cdef int N
         cdef int i
@@ -145,25 +214,67 @@ cdef class TrendModel(object):
 
         N = self.N
         P = np.ones(N) * np.nan
-        for i in xrange(N):
-            P[i] = self._calculate_trend()
+
+        if True:  # parallel processing
+            #pool = multiprocessing.Pool(processes=N)
+            #pool.map(unwrap_self_plot_variable, zip([self]*N, keys, [L]*N, [save]*N,[align]*N, [year]*N))
+
+#~          print zip([self]*N)
+#~          pool = mp.Pool(processes=4)
+
+#~          results = [pool.apply(unwrap_trend_analysis, args=(self,)) for x in range(N)]
+#~          pool.map(unwrap_trend_analysis, zip([self]*N))
+            #print results
+            #pool.close()
+
+
+            pool = multiprocessing.Pool(processes=nproc)
+
+#~             nd(np.ndarray[DTYPE_t, ndim=1] t, double intercept, double trend, double sigma):
+
+
+            P = np.asarray(pool.map(calculate_trend, zip([self.t]*N, [self.intercept]*N, [self.trend]*N, [self.sigma]*N     )))  # this runs really in parallel!)
+            pool.close()
+            #print P
+#~ pool = mp.Pool(processes=4)
+#~ results = [pool.apply(cube, args=(x,)) for x in range(1,7)]
+
+
+
+        else:
+            for i in xrange(N):
+                P[i] = self._calculate_trend()
         return P
 
-    def _calculate_trend(self):
-        """
-        generate random time series and return
-        significance of trends
-        """
 
-        cdef double p
-        cdef np.ndarray[DTYPE_t, ndim=1] y
 
-        # generate timeseries with random normal distributed noise (eq.1, eq 7)
-        y = self.intercept + self.trend * self.t + np.random.randn(len(self.t))*self.sigma
 
-        # calculate trend using specified method
-        p = self._trend_estimate(self.t, y)
-        return p
+
+
+
+
+
+
+#~     def _calculate_trend(self):
+#~         """
+#~         generate random time series and return
+#~         significance of trends
+#~         """
+#~
+#~         cdef double p
+#~         cdef np.ndarray[DTYPE_t, ndim=1] y
+#~
+#~         #print 'intercept: ', self.intercept
+#~         #print 'slope: ', self.trend
+#~
+#~         # generate timeseries with random normal distributed noise (eq.1, eq 7)
+#~         y = self.intercept + self.trend * self.t + np.random.randn(len(self.t))*self.sigma
+#~
+#~         # calculate trend using specified method
+#~         p = self._trend_estimate(self.t, y)
+#~
+#~         print 'p: ', p
+#~         return p
 
     def _pearson_correlation(self, t, y):
         assert False

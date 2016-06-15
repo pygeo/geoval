@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 
 t = np.arange(1951,2001,1).astype('float')
-N = 5
+N = 100
 trends = np.arange(1.,21.,0.1)  # todo: do faster by Newton itteration --> not all trends need to be calculated
 
 means = np.linspace(100.,1000.,20)
