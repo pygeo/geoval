@@ -1,7 +1,7 @@
 import pyximport; pyximport.install()
 
 from mintrend import *
-
+import cPickle
 
 import matplotlib
 matplotlib.use('Agg')
@@ -9,14 +9,9 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
-#~ plt.close('all')
-
-
-
-
 t = np.arange(1951,2001,1).astype('float')
-N = 100
-trends = np.arange(1.,21.,0.1)  # todo: do faster by Newton itteration --> not all trends need to be calculated
+N = 1000
+trends = np.arange(1.,21.,0.1)
 
 means = np.linspace(100.,1000.,20)
 cvs = np.linspace(0.1,1.,10)
@@ -27,12 +22,13 @@ ncvs = len(cvs)
 MT = np.ones((nmeans,ncvs))*np.nan
 
 for i in xrange(nmeans):
-
     for j in xrange(ncvs):
         M = Mintrend(t, means[i], cvs[j], trends, N)
         #M = Mintrend(t, 600., 0.2, trends=trends, N=N)
         MT[i,j] = M.get_mintrend()
         print means[i], cvs[j] #, MT[i,j]
+
+cPickle.dump({'means' : means, 'cvs' : cvs, 'res' : MT},open('results.pkl','w'))
 
 
 # generate plot
@@ -47,14 +43,4 @@ ax.set_ylabel('CV')
 ax.set_title('minimum detectable trend')
 f.savefig('mintrend_contour.png', dpi=300)
 plt.close('all')
-
-#~ plt.show()
-
-
-#~ T = TrendModel(t, 600., 0.2, 10./10., N)  # todo 10mm/decade ...
-#~ P = T.calc_trend_significances()
-#~
-#~ pthres = 0.05
-#~ print 'Fraction: ', len(P[P<pthres]) / float(N)
-
 

@@ -215,7 +215,12 @@ cdef class TrendModel(object):
         N = self.N
         P = np.ones(N) * np.nan
 
-        if True:  # parallel processing
+        if N > 5:
+            do_parallel = True
+        else:
+            do_parallel = False
+
+        if do_parallel:  # parallel processing
             #pool = multiprocessing.Pool(processes=N)
             #pool.map(unwrap_self_plot_variable, zip([self]*N, keys, [L]*N, [save]*N,[align]*N, [year]*N))
 
@@ -228,7 +233,7 @@ cdef class TrendModel(object):
             #pool.close()
 
 
-            pool = multiprocessing.Pool(processes=nproc)
+            pool = multiprocessing.Pool(processes=max(nproc,N))
 
 #~             nd(np.ndarray[DTYPE_t, ndim=1] t, double intercept, double trend, double sigma):
 
@@ -243,7 +248,7 @@ cdef class TrendModel(object):
 
         else:
             for i in xrange(N):
-                P[i] = self._calculate_trend()
+                P[i] = calculate_trend([self.t, self.intercept, self.trend, self.sigma])
         return P
 
 
