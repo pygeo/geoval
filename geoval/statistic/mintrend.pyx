@@ -78,7 +78,10 @@ cdef class Mintrend(object):
 
         res_trend, res_frac = self._calculate_significant_trend_fractions(pthres)
         tmp = res_trend[res_frac >= thres]
+        #print ''
         #print tmp
+        #print res_trend
+        #print res_frac
         if len(tmp) > 0:
             return tmp.min()
         else:
@@ -98,6 +101,8 @@ cdef class Mintrend(object):
             T = TrendModel(self.t, self.mean, self.cv, trend, self.N)
             # calculate now the significances for the given trend
             P = T.calc_trend_significances()
+            #print 'trend, sigma', trend, T.sigma
+            #print P
             thetrend.append(trend)
             fraction.append(float(len(P[P<pthres])) / float(self.N))
         return np.asarray(thetrend), np.asarray(fraction)
@@ -143,7 +148,11 @@ cdef class TrendModel(object):
         self.tmean = t.mean()
         tmp = self.cv**2. * self.mean**2. - self.trend**2. * t.var()
         self.intercept = self.mean - self.trend * self.tmean  # eq.5
+        #print 'VART: ', t.var()
         if tmp <=0.:
+            #print 'mean, cv: ', self.mean, self.cv, self.trend, t.var(), self.tmean
+
+            #print 'TMP: ', tmp
             self.sigma = np.nan
         else:
             self.sigma = np.sqrt(tmp)

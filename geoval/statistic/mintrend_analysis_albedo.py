@@ -15,9 +15,22 @@ import matplotlib.pyplot as plt
 N = 1000 # number of ensemble members
 t = np.arange(1998,2016,1).astype('float')
 
-trends = np.arange(0.00001,0.0005,0.00001)/10.   # :10 as timestamp is per year!
-means = np.linspace(0.01,0.6,30)
-cvs = np.linspace(0.01,0.2,10)
+#~ trends = np.arange(0.00001,0.0005,0.00001)/10.   # :10 as timestamp is per year!
+#~ means = np.linspace(0.01,0.6,30)
+#~ cvs = np.linspace(0.01,0.02,5)
+
+
+
+#~ trends = np.asarray([0.00001, 0.0001,0.001, 0.002, 0.003, 0.004, 0.01])   # corresponds to trend per year!!!
+trends = np.arange(0.00001,0.01,0.0001)
+
+
+#~ trend=trends*10.  # testin
+
+means = np.arange(0.05,0.65,0.01)
+#~ cvs = np.asarray([0.01, 0.05,0.1,0.2,0.3])
+cvs = np.arange(0.01,0.1.1,0.05)
+
 
 # processing ...
 nmeans = len(means)
@@ -31,14 +44,19 @@ for i in xrange(nmeans):
         MT[i,j] = M.get_mintrend()
         print means[i], cvs[j] #, MT[i,j]
 
+MT = np.ma.array(MT, mask=np.isnan(MT))
+print MT
+
+
 # save results
 cPickle.dump({'means' : means, 'cvs' : cvs, 'res' : MT},open('results_albedo_' + str(N) + '.pkl','w'))
 
 # generate plot
-levels=np.arange(2.,20,2)
+#levels=np.arange(2.,20,2)
+
 f = plt.figure()
 ax = f.add_subplot(111)
-CS = ax.contour(means, cvs, MT.T, levels=levels)
+CS = ax.contour(means, cvs, MT.T)   #, levels=levels)
 plt.clabel(CS, inline=1, fontsize=10)
 ax.grid()
 ax.set_xlabel('mean value')
