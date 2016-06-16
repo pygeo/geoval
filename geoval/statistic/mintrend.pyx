@@ -78,6 +78,7 @@ cdef class Mintrend(object):
 
         res_trend, res_frac = self._calculate_significant_trend_fractions(pthres)
         tmp = res_trend[res_frac >= thres]
+        #print tmp
         if len(tmp) > 0:
             return tmp.min()
         else:
@@ -147,6 +148,7 @@ cdef class TrendModel(object):
         else:
             self.sigma = np.sqrt(tmp)
 
+
     def calc_trend_significances(self, nproc=24):
         """
         calculate trend significances for N realizations
@@ -175,6 +177,7 @@ cdef class TrendModel(object):
         else:
             for i in xrange(N):
                 P[i] = calculate_trend([self.t, self.intercept, self.trend, self.sigma])
+        #print P
         return P
 
 

@@ -17,7 +17,7 @@ t = np.arange(1998,2016,1).astype('float')
 
 trends = np.arange(0.00001,0.0005,0.00001)/10.   # :10 as timestamp is per year!
 means = np.linspace(0.01,0.6,30)
-cvs = np.linspace(0.01,1.,10)
+cvs = np.linspace(0.01,0.2,10)
 
 # processing ...
 nmeans = len(means)
