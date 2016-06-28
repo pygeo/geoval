@@ -4674,7 +4674,7 @@ class GeoData(object):
 
 
 
-    def _init_sample_object(self, nt=None, ny=20, nx=10):
+    def _init_sample_object(self, nt=None, ny=20, nx=10, gaps=False):
         """
         initialize the current object as a samle object
         this is in particular usefull for testing
@@ -4691,6 +4691,8 @@ class GeoData(object):
             number of rows
         nx : int
             number of cols
+        gaps : logical
+            generate also data gaps
         """
 
         if nt is None:
@@ -4706,7 +4708,10 @@ class GeoData(object):
             else:
                 data = np.random.random((nt, ny, nx))
 
-        self.data = np.ma.array(data, mask=data != data)
+        if gaps:
+            self.data = np.ma.array(data, mask=data > 0.8)  # include some data gaps
+        else:
+            self.data = np.ma.array(data, mask=data != data)
         self.unit = 'myunit'
         self.label = 'testlabel'
         self.filename = 'testinputfilename.nc'
@@ -4795,7 +4800,7 @@ class GeoData(object):
         # plus one because of the num2date() basedate definition
         self.time = plt.date2num(newtime) + 1.
 
-                                                
+
     def get_shape_statistics(self,regions): #written before geoval was implemented
         """
         get statistical information for different polygons in shapefile
@@ -4803,10 +4808,10 @@ class GeoData(object):
         ----------
         regions : masks for masked array
         """
-        
+
         self.regionalized=dict()
         regname=regions.keys()
-        
+
         for s in np.arange(len(regions)):
             loc_content=self.data.copy()
             loc_content.mask=regions[regname[s]]
@@ -4815,24 +4820,24 @@ class GeoData(object):
                                             np.nanmax(loc_content),
                                             np.nanstd(loc_content)
                                             ]
-                                            
+
     def get_regions(self,shape,column=0): #written before geoval was implemented
         """
         get setup for statistical information for different polygons in shapefile
-        caution: slow for complex polygons         
+        caution: slow for complex polygons
         Parameters
         ----------
         shape : shp.Reader (shapefile.Reader)
             information on areas from a classic ESRI shapefile
         """
         assert isinstance(shape,shp.Reader)
-        
-        
+
+
         def point_in_poly(point,poly):
-            """ function to find points within polygon """ 
+            """ function to find points within polygon """
             n = len(poly)
             inside = False
-        
+
             p1x,p1y = poly[0]
             for i in range(n+1):
                 p2x,p2y = poly[i % n]
@@ -4844,12 +4849,12 @@ class GeoData(object):
                             if p1x == p2x or point[0] <= xints:
                                 inside = not inside
                 p1x,p1y = p2x,p2y
-        
+
             return inside
-        
+
         regions=dict()
-        regname=np.array(shape.records())[:,column] 
-        
+        regname=np.array(shape.records())[:,column]
+
         for s in np.arange(len(shape.shapes())):
             loc_poly = shape.shapes()[s].points
             if len(self.shape) == 3:
@@ -4863,7 +4868,7 @@ class GeoData(object):
                     ll=[self.lon[i,j] if self.lon[i,j]<180 else self.lon[i,j]-180,self.lat[i,j]]
                     loc_mask[i,j]=loc_mask[i,j] and not point_in_poly(ll,loc_poly)
 
-            
+
             regions[regname[s]]=loc_mask
-            
+
         return regions
