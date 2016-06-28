@@ -8,7 +8,7 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 from unittest import TestCase
 import unittest
 
-from geoval.core.data import GeoData
+from geoval.core import GeoData
 from geoval.region import RegionPolygon
 
 import os
