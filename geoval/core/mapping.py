@@ -39,7 +39,7 @@ except:
 
 import matplotlib as mpl
 import numpy as np
-from data import Data
+from data import GeoData
 
 
 class MapPlotGeneric(object):
@@ -701,7 +701,7 @@ class SingleMap(MapPlotGeneric):
         X : Data
             Data object with data to plot
         """
-        assert(isinstance(x, Data))
+        assert(isinstance(x, GeoData))
         super(SingleMap, self).__init__(**kwargs)
         self.x = x
 

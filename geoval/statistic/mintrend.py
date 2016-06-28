@@ -2,6 +2,8 @@ import os
 import cPickle
 import numpy as np
 from scipy.interpolate import griddata
+from geoval.core import GeoData
+from geoval.core.mapping import SingleMap
 """
 Minimum trend analysis
 """
@@ -61,21 +63,39 @@ class MintrendPlot(object):
         assert STD.data.ndim == 2
         assert ME.data.ndim == 2
 
+        # coefficient of variation
         CV = STD.div(ME)
 
-        print STD.data
+        # mask for valid pixels
+        msk = ~CV.data.mask
 
-        assert False
+        # vectors which correpond to data that should be interpolated to
+        cvs = CV.data[msk].flatten()
+        means = ME.data[msk].flatten()
+
+        # interpolation
+        z = np.ones(len(means))*np.nan
+        for i in xrange(len(z)):
+            z[i] = self._interpolate([cvs[i]], [means[i]])  # could be probably done more efficient
+
+        # map back to original geometry
+        tmp = np.ones(ME.nx*ME.ny)*np.nan
+        tmp[msk.flatten()] = z
+        tmp = tmp.reshape((ME.ny,ME.nx))
+
+        X = GeoData(None, None)
+        X._init_sample_object(nt=None, ny=ME.ny, nx=ME.nx, gaps=False)
+        X.data = np.ma.array(tmp, mask=tmp != tmp)
+
+        # final map generation
+        self._draw_map(X)
+
+    def _draw_map(self, X):
+        M = SingleMap(X)
+        M.plot()
 
 
-        #~ remove masked values
 
-        #~ flatten
-
-        #~ interpolate
-
-
-        #~ generate map
 
 
 

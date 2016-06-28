@@ -9,7 +9,7 @@ from unittest import TestCase
 import unittest
 
 from geoval.core import GeoData
-from geoval.statistic import MintrendPlot
+from geoval.statistic.mintrend import MintrendPlot
 
 import os
 import cPickle
@@ -89,9 +89,13 @@ class TestTrend(unittest.TestCase):
         nx = 3
         STD = GeoData(None, None)
         STD._init_sample_object(nt=None, ny=ny, nx=nx, gaps=True)
+        STD.mulc(100.,copy=False)
+        #~ STD.addc(1.,copy=False)
 
         ME = GeoData(None, None)
         ME._init_sample_object(nt=None, ny=ny, nx=nx)
+        ME.mulc(30.,copy=False)
+        #~ ME.addc(10.,copy=False)
 
         lutname, d = self._generate_sample_lut()
         P = MintrendPlot(lutname)
