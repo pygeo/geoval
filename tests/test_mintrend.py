@@ -99,7 +99,9 @@ class TestTrend(unittest.TestCase):
 
         lutname, d = self._generate_sample_lut()
         P = MintrendPlot(lutname)
-        P.plot(STD, ME)
+        P.map_trends(STD, ME)
+
+        self.assertTrue(hasattr(P,'X'))
 
 
 if __name__ == '__main__':

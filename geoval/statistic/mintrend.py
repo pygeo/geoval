@@ -11,6 +11,10 @@ Minimum trend analysis
 class MintrendPlot(object):
     """
     class for plotting minimum trend analysis results
+    Note that the minimum trend analysis look up table
+    needs to be preprocessed using a spearate program
+    and that also the STDV and MEAN (timstd, timmean)
+    are required for plotting final data
     """
     def __init__(self,lutname):
         """
@@ -54,11 +58,22 @@ class MintrendPlot(object):
         tmeans = np.asarray(tmeans)
         return griddata((self.means,self.cvs), self.lut, (tmeans[None,:],tcvs[:,None]), method=method)
 
-    def plot(self, STD, ME):
+    def map_trends(self, STD, ME):
         """
         STD : GeoData
         ME : GeoData
         """
+
+        if STD.ndim == 3:
+            if STD.nt == 1:
+                STD.data = STD.data[0,:,:]
+            else:
+                assert False
+        if ME.ndim == 3:
+            if ME.nt == 1:
+                ME.data = ME.data[0,:,:]
+            else:
+                assert False
 
         assert STD.data.ndim == 2
         assert ME.data.ndim == 2
@@ -73,26 +88,36 @@ class MintrendPlot(object):
         cvs = CV.data[msk].flatten()
         means = ME.data[msk].flatten()
 
-        # interpolation
-        z = np.ones(len(means))*np.nan
-        for i in xrange(len(z)):
-            z[i] = self._interpolate([cvs[i]], [means[i]])  # could be probably done more efficient
+        print 'NPixels: ', len(means)
 
-        # map back to original geometry
-        tmp = np.ones(ME.nx*ME.ny)*np.nan
-        tmp[msk.flatten()] = z
-        tmp = tmp.reshape((ME.ny,ME.nx))
 
-        X = GeoData(None, None)
-        X._init_sample_object(nt=None, ny=ME.ny, nx=ME.nx, gaps=False)
-        X.data = np.ma.array(tmp, mask=tmp != tmp)
+        if True:
+            # interpolation
+            z = np.ones(len(means))*np.nan
+            if True:
+                for i in xrange(len(z)):
+                    if i % 1000 == 0:
+                        print i
+                    z[i] = self._interpolate([cvs[i]], [means[i]])  # could be probably done more efficient
+            else:
+                z = self._interpolate(cvs, means)
 
-        # final map generation
-        self._draw_map(X)
+            # map back to original geometry
+            tmp = np.ones(ME.nx*ME.ny)*np.nan
+            tmp[msk.flatten()] = z
+            tmp = tmp.reshape((ME.ny,ME.nx))
 
-    def _draw_map(self, X):
-        M = SingleMap(X)
-        M.plot()
+            X = GeoData(None, None)
+            X._init_sample_object(nt=None, ny=ME.ny, nx=ME.nx, gaps=False)
+            X.data = np.ma.array(tmp, mask=tmp != tmp)
+
+            self.X = X
+
+
+
+    def draw_map(self, **kwargs):
+        M = SingleMap(self.X)
+        M.plot(**kwargs)
 
 
 
