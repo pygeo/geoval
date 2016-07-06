@@ -116,8 +116,9 @@ class MintrendPlot(object):
 
 
     def draw_map(self, **kwargs):
-        M = SingleMap(self.X)
-        M.plot(**kwargs)
+        self.M = SingleMap(self.X)
+        self.M.plot(**kwargs)
+
 
 
 
