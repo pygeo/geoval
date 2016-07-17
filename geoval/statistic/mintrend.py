@@ -16,7 +16,7 @@ class MintrendPlot(object):
     and that also the STDV and MEAN (timstd, timmean)
     are required for plotting final data
     """
-    def __init__(self,lutname):
+    def __init__(self, lutname):
         """
         Parameters
         ----------
@@ -40,7 +40,7 @@ class MintrendPlot(object):
         self.means = MEAN[msk].flatten()
         self.lut = d['res'][msk].flatten()
 
-    def _interpolate(self, tcvs, tmeans, method='linear'):
+    def _interpolate(self, tcvs, tmeans, tphis, method='linear'):
         """
         interpolate LUT to target using griddata
         for this vectors of the variation coefficient
@@ -50,15 +50,19 @@ class MintrendPlot(object):
             list of variations of coefficient to interpolate to
         tmeans : ndarray
             list of mean values to interpolate to
+        tphis : ndarray
+            list of correlation values (phi)
         method : str
             methods used for interpolation ['cubic','linear']
             for further details see documentation of griddata routine
         """
         tcvs = np.asarray(tcvs)
         tmeans = np.asarray(tmeans)
-        return griddata((self.means,self.cvs), self.lut, (tmeans[None,:],tcvs[:,None]), method=method)
+        tphis = np.asarray(tphis)
 
-    def map_trends(self, STD, ME):
+        return griddata((self.phis,self.means,self.cvs,self.phis), self.lut, (tphis[:,None],tmeans[None,:],tcvs[:,None]), method=method)
+
+    def map_trends(self, STD, ME, PHI):
         """
         STD : GeoData
         ME : GeoData
@@ -74,9 +78,21 @@ class MintrendPlot(object):
                 ME.data = ME.data[0,:,:]
             else:
                 assert False
+        if PHI.ndim == 3:
+            if PHI.nt == 1:
+                PHI.data = PHI.data[0,:,:]
+            else:
+                assert False
+
 
         assert STD.data.ndim == 2
         assert ME.data.ndim == 2
+        assert PHI.data.ndim == 2
+
+        hier weiter ...
+
+
+        cv or std ??? caluclation of CV still usefull ??? what is stored in LUT generation ???
 
         # coefficient of variation
         CV = STD.div(ME)
@@ -87,6 +103,7 @@ class MintrendPlot(object):
         # vectors which correpond to data that should be interpolated to
         cvs = CV.data[msk].flatten()
         means = ME.data[msk].flatten()
+        phis = PHI.data[msk].flatten()
 
         print 'NPixels: ', len(means)
 
@@ -98,9 +115,9 @@ class MintrendPlot(object):
                 for i in xrange(len(z)):
                     if i % 1000 == 0:
                         print i
-                    z[i] = self._interpolate([cvs[i]], [means[i]])  # could be probably done more efficient
+                    z[i] = self._interpolate([cvs[i]], [means[i]], [phis[i]])  # could be probably done more efficient
             else:
-                z = self._interpolate(cvs, means)
+                z = self._interpolate(cvs, means, phis)
 
             # map back to original geometry
             tmp = np.ones(ME.nx*ME.ny)*np.nan
