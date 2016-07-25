@@ -95,7 +95,32 @@ class MintrendPlot(object):
         cv or std ??? caluclation of CV still usefull ??? what is stored in LUT generation ???
 
         # coefficient of variation
+        TMP = PHI.mul(PHI).mulc(-1.).addc(1.)  # (1-phi**2)
+        # CV**2 = sigma_r**2 / (mu**2 * (1-phi**2)) + beta**2/mu**2 * var(t)
+        CV = STD.mul(STD).div(ME).div(ME).div(TMP)
+        del TMP
+        TMP =
+
+
         CV = STD.div(ME)
+        $(CV^2 \cdot \mu^2 - trend^2 \cdot Var(t)) \cdot (1-\phi^2)$
+
+
+
+        important is that tthe time unit is the same as the one used to calculate the trend !
+        --< annual data ???
+
+
+        CV.data = np.sqrt(CV.data)
+
+
+
+        ???
+
+
+
+
+
 
         # mask for valid pixels
         msk = ~CV.data.mask
