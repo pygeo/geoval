@@ -36,6 +36,8 @@ import calendar
 import pickle
 from calendar import monthrange
 import tempfile
+from dateutil import relativedelta
+
 
 from geoval.statistic import get_significance, ttest_ind
 from geoval.polygon import Raster
@@ -1380,24 +1382,60 @@ class GeoData(object):
         convert time that was given as YYYY.f
         and set time variable of Data object
 
+        the fractions after the decimal point are related to
+        the fraction of the year
+
         The date is set to the first of January for each year
         """
 
-        s = map(str, self.time)
+
+        years = np.asarray(map(np.floor, self.time))
+        frac = self.time - years
+        isleap = np.asarray(map(calendar.isleap, years))
+        ndays = np.ones_like(years)*365.
+        ndays[isleap] = 366.
+        days = frac*ndays
+
         T = []
-        for t in s:
-            y = t[0:4]
-            m = '01'
-            d = '01'  # always the first day is used as default
-            h = '00'
-            tn = y + '-' + m + '-' + d + ' ' + h + ':00'
-            T.append(tn)
-        T = np.asarray(T)
+        for i in xrange(len(years)):
+            d = datetime.datetime(int(years[i]),1,1)+relativedelta.relativedelta(days=days[i])
+            T.append(d)
+
+
+
+#~ now use relative date here
+
+        #~ o.k., das ist Falsch !!!
+
+        #s = map(str, self.time)
+        #T = []
+        #~ for t in s:
+            #~ print t
+            #~ y = t[0:4]
+#~
+            #~ floor here
+#~
+#~
+#~
+            #~ if calendar.isleap(year):
+                #~ ndays = 366.
+            #~ else:
+                #~ ndays = 365.
+#~
+            #~ fraction, relative day ...
+#~
+#~
+            #~ m = '01'
+            #~ d = '01'  # always the first day is used as default
+            #~ h = '00'
+            #~ tn = y + '-' + m + '-' + d + ' ' + h + ':00'
+            #~ T.append(tn)
+        #~ T = np.asarray(T)
         self.calendar = 'gregorian'
         self.time_str = 'days since 0001-01-01 00:00:00'
         # convert first to datetime object and then use own function !!!
-        self.time = self.date2num(plt.num2date(plt.datestr2num(T)))
-
+        #~ self.time = self.date2num(plt.num2date(plt.datestr2num(T)))
+        self.time = self.date2num(np.asarray(T))
 
 
     def _read_coordinates(self, shift_lon, netcdf_backend=None):
@@ -1565,6 +1603,7 @@ class GeoData(object):
             raise ValueError('ERROR: no calendar specified!')
         if not hasattr(self, 'time'):
             raise ValueError('ERROR: no time specified!')
+
 
         if self.time_str == 'day as %Y%m%d.%f':
             # in case of YYYYMMDD, convert to other time with basedate
@@ -1822,6 +1861,11 @@ class GeoData(object):
             tvar = File.get_variable_handler(self.time_var)
             if hasattr(tvar, 'units'):
                 self.time_str = tvar.units
+
+                if self.time_str == 'years since 0-01-01 00:00:00':
+                    self.time_str = 'year as %Y.%f'   # change string to support netcdf4 time library
+
+
             else:
                 self.time_str = None
 
