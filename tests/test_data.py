@@ -2341,40 +2341,35 @@ class TestData(unittest.TestCase):
 
     def test_convert_timeYYYY(self):
         d = self.D.copy()
-        d.time = np.asarray([1999., 1999.5, 2000., 2000.5, 2004., 2004.5])
+
+        # no leap year
+        d.time = np.asarray([1999., 1999.0 + 23./(365.*24.), 1999.0 + 2./365. + 20./(365.*24.), 1999.0 + 59./365.    ]) # 23:00
         d._convert_timeYYYY()
-
-        # no leap year
-        self.assertEqual(d.date[0].year, 1999)
-        self.assertEqual(d.date[0].month, 1)
-        self.assertEqual(d.date[0].day, 1)
-        self.assertEqual(d.date[0].hour, 0)
-        self.assertEqual(d.date[0].minute, 0)
-        self.assertEqual(d.date[0].second, 0)
-
-        #~ self.assertEqual(d.date[1].year, 1999)
-        #~ self.assertEqual(d.date[1].month, 7)
-        #~ self.assertEqual(d.date[1].day, 1)
-        #~ self.assertEqual(d.date[1].hour, 12)
-        #~ self.assertEqual(d.date[1].minute, 0)
-        #~ self.assertEqual(d.date[1].second, 0)
-
-
-#~
-#~
-#~
-        # no leap year
-        self.assertEqual(d.date[2].year, 2000)
-        self.assertEqual(d.date[2].month, 1)
-        self.assertEqual(d.date[2].day, 1)
-        self.assertEqual(d.date[2].hour, 0)
-        self.assertEqual(d.date[2].minute, 0)
-        self.assertEqual(d.date[2].second, 0)
-#~
-        # leap year
-        k=4
-        self.assertEqual(d.date[k].year, 2004)
+        k = 0
+        self.assertEqual(d.date[k].year, 1999)
         self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 0)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 1
+        self.assertEqual(d.date[k].year, 1999)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 23)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 2
+        self.assertEqual(d.date[k].year, 1999)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 3)
+        self.assertEqual(d.date[k].hour, 20)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+
+        k = 3
+        self.assertEqual(d.date[k].year, 1999)
+        self.assertEqual(d.date[k].month, 3)
         self.assertEqual(d.date[k].day, 1)
         self.assertEqual(d.date[k].hour, 0)
         self.assertEqual(d.date[k].minute, 0)
@@ -2382,6 +2377,65 @@ class TestData(unittest.TestCase):
 
 
 
+
+
+        # no leap year
+        d.time = np.asarray([1900., 1900.0 + 23./(365.*24.), 1900.0 + 2./365. + 20./(365.*24.)]) # 23:00
+        d._convert_timeYYYY()
+        k = 0
+        self.assertEqual(d.date[k].year, 1900)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 0)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 1
+        self.assertEqual(d.date[k].year, 1900)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 23)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 2
+        self.assertEqual(d.date[k].year, 1900)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 3)
+        self.assertEqual(d.date[k].hour, 20)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+
+
+        # special leap year
+        d.time = np.asarray([2000., 2000.0 + 23./(366.*24.), 2000.0 + 2./366. + 20./(366.*24.), 2000.0 + 61./366. + 19./(366.*24.) ]) # 23:00
+        d._convert_timeYYYY()
+        k = 0
+        self.assertEqual(d.date[k].year, 2000)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 0)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 1
+        self.assertEqual(d.date[k].year, 2000)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 23)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 2
+        self.assertEqual(d.date[k].year, 2000)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 3)
+        self.assertEqual(d.date[k].hour, 20)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 3
+        self.assertEqual(d.date[k].year, 2000)
+        self.assertEqual(d.date[k].month, 3)
+        self.assertEqual(d.date[k].day, 2)
+        self.assertEqual(d.date[k].hour, 19)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
 
 
     def test_convert_timeYYYYMM(self):

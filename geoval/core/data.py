@@ -1401,40 +1401,8 @@ class GeoData(object):
             d = datetime.datetime(int(years[i]),1,1)+relativedelta.relativedelta(days=days[i])
             T.append(d)
 
-
-
-#~ now use relative date here
-
-        #~ o.k., das ist Falsch !!!
-
-        #s = map(str, self.time)
-        #T = []
-        #~ for t in s:
-            #~ print t
-            #~ y = t[0:4]
-#~
-            #~ floor here
-#~
-#~
-#~
-            #~ if calendar.isleap(year):
-                #~ ndays = 366.
-            #~ else:
-                #~ ndays = 365.
-#~
-            #~ fraction, relative day ...
-#~
-#~
-            #~ m = '01'
-            #~ d = '01'  # always the first day is used as default
-            #~ h = '00'
-            #~ tn = y + '-' + m + '-' + d + ' ' + h + ':00'
-            #~ T.append(tn)
-        #~ T = np.asarray(T)
         self.calendar = 'gregorian'
         self.time_str = 'days since 0001-01-01 00:00:00'
-        # convert first to datetime object and then use own function !!!
-        #~ self.time = self.date2num(plt.num2date(plt.datestr2num(T)))
         self.time = self.date2num(np.asarray(T))
 
 
