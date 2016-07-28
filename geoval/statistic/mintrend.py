@@ -62,15 +62,39 @@ class MintrendPlot(object):
 
         return griddata((self.phis,self.means,self.cvs,self.phis), self.lut, (tphis[:,None],tmeans[None,:],tcvs[:,None]), method=method)
 
-    def map_trends(self, STD, ME, PHI):
+    def _calc_cv(self, PHI, SLOPE, SIG_R, ME, var_t):
+        """
+        calculate coefficient of variance
+        and return a Data object
+
+        note, that the slope and tvar units need to be consistent (e.g. need to be valid per YEAR)
+        see Albedo_mintrend.ipynb for checking
+
+        """
+
+        # now calculate CV for deseasonalized timeseries
+        # CV = sig_y / mu_y with
+        # sig_y = sqrt(b**2 * var(t) + sig_r^2 / (1-phi**2))
+
+        TMP1 = PHI.mul(PHI).mulc(-1.).addc(1.)
+        RIGHT = SIG_R.mul(SIG_R).div(TMP1)
+        LEFT = SLOPE.mul(SLOPE).mulc(var_t)
+        CV = LEFT.add(RIGHT)
+        CV.data = np.sqrt(CV.data)
+        CV = CV.div(ME)
+
+        self.CV = CV
+
+
+    def map_trends(self, SIG_R, ME, PHI, SLOPE):
         """
         STD : GeoData
         ME : GeoData
         """
 
-        if STD.ndim == 3:
-            if STD.nt == 1:
-                STD.data = STD.data[0,:,:]
+        if SIG_R.ndim == 3:
+            if SIG_R.nt == 1:
+                SIG_R.data = SIG_R.data[0,:,:]
             else:
                 assert False
         if ME.ndim == 3:
@@ -83,58 +107,32 @@ class MintrendPlot(object):
                 PHI.data = PHI.data[0,:,:]
             else:
                 assert False
+        if SLOPE.ndim == 3:
+            if SLOPE.nt == 1:
+                SLOPE.data = SLOPE.data[0,:,:]
+            else:
+                assert False
 
-
-        assert STD.data.ndim == 2
+        assert SIG_R.data.ndim == 2
         assert ME.data.ndim == 2
         assert PHI.data.ndim == 2
-
-
-
-        assert False
-        #~ hier weiter ...
-
-
-        #~ cv or std ??? caluclation of CV still usefull ??? what is stored in LUT generation ???
+        assert SLOPE.data.ndim == 2
 
         # coefficient of variation
-        TMP = PHI.mul(PHI).mulc(-1.).addc(1.)  # (1-phi**2)
-        # CV**2 = sigma_r**2 / (mu**2 * (1-phi**2)) + beta**2/mu**2 * var(t)
-        CV = STD.mul(STD).div(ME).div(ME).div(TMP)
-        del TMP
-        #~ TMP =
+        self._calc_cv(PHI, SLOPE, SIG_R, var_t)
 
-
-        CV = STD.div(ME)
-        #~ $(CV^2 \cdot \mu^2 - trend^2 \cdot Var(t)) \cdot (1-\phi^2)$
-
-
-
-        #~ important is that tthe time unit is the same as the one used to calculate the trend !
-        #~ --< annual data ???
-
-
-        CV.data = np.sqrt(CV.data)
-
-
-
-        #~ ???
-
-
-
-
+        print self.CV.min, self.CV.max
 
 
         # mask for valid pixels
-        msk = ~CV.data.mask
+        msk = ~self.CV.data.mask
 
         # vectors which correpond to data that should be interpolated to
-        cvs = CV.data[msk].flatten()
+        cvs = self.CV.data[msk].flatten()
         means = ME.data[msk].flatten()
         phis = PHI.data[msk].flatten()
 
         print 'NPixels: ', len(means)
-
 
         if True:
             # interpolation
@@ -160,7 +158,7 @@ class MintrendPlot(object):
 
 
 
-    def draw_map(self, **kwargs):
+    def draw_trend_map(self, **kwargs):
         self.M = SingleMap(self.X)
         self.M.plot(**kwargs)
 

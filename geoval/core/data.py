@@ -158,9 +158,23 @@ class GeoData(object):
                 'Some error in time conversion happened! Look in dump.pkl to fix it')
     date = property(_get_date)
 
+    def _get_data_min(self):
+        return self.data.min()
+    min = property(_get_data_min)
+
+    def _get_data_max(self):
+        return self.data.max()
+    max = property(_get_data_max)
+
     def _get_ndim(self):
         return self.data.ndim
     ndim = property(_get_ndim)
+
+
+
+
+
+
 
     def _get_nt(self):
         return len(self.time)
