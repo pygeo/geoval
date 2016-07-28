@@ -32,12 +32,18 @@ class MintrendPlot(object):
         d = cPickle.load(open(self._lutname,'r'))
 
         # generate array of indices and then use only LUT values that are not NaN
-        CVS, MEAN = np.meshgrid(d['cvs'],d['means'])
+        MEAN, PHIS, CVS  = np.meshgrid(d['means'],d['phis'],d['cvs'])
         msk = ~np.isnan(d['res'])
 
         # now generate vector from all values that are not None
+        #~ print 'CVS: ', CVS.shape, len(d['cvs'])
+        #~ print 'means: ', len(d['means'])
+        #~ print 'phis: ', len(d['phis'])
+
         self.cvs = CVS[msk].flatten()
         self.means = MEAN[msk].flatten()
+        self.phis = PHIS[msk].flatten()
+
         self.lut = d['res'][msk].flatten()
 
     def _interpolate(self, tcvs, tmeans, tphis, method='linear'):
@@ -60,7 +66,9 @@ class MintrendPlot(object):
         tmeans = np.asarray(tmeans)
         tphis = np.asarray(tphis)
 
-        return griddata((self.phis,self.means,self.cvs,self.phis), self.lut, (tphis[:,None],tmeans[None,:],tcvs[:,None]), method=method)
+
+
+        return griddata((self.phis,self.means,self.cvs), self.lut, (tphis[:,None],tmeans[None,:],tcvs[:,None]), method=method)
 
     def _calc_cv(self, PHI, SLOPE, SIG_R, ME, var_t):
         """
@@ -86,7 +94,7 @@ class MintrendPlot(object):
         self.CV = CV
 
 
-    def map_trends(self, SIG_R, ME, PHI, SLOPE):
+    def map_trends(self, SIG_R, ME, PHI, SLOPE, var_t, force=False):
         """
         STD : GeoData
         ME : GeoData
@@ -119,8 +127,7 @@ class MintrendPlot(object):
         assert SLOPE.data.ndim == 2
 
         # coefficient of variation
-        self._calc_cv(PHI, SLOPE, SIG_R, var_t)
-
+        self._calc_cv(PHI, SLOPE, SIG_R, ME, var_t)
         print self.CV.min, self.CV.max
 
 
@@ -134,10 +141,18 @@ class MintrendPlot(object):
 
         print 'NPixels: ', len(means)
 
-        if True:
+        if hasattr(self, 'X'):
+            if force:
+                do_calc = True
+            else:
+                do_calc = False
+        else:
+            do_calc = True
+
+        if do_calc:
             # interpolation
-            z = np.ones(len(means))*np.nan
             if True:
+                z = np.ones(len(means))*np.nan
                 for i in xrange(len(z)):
                     if i % 1000 == 0:
                         print i
@@ -161,6 +176,13 @@ class MintrendPlot(object):
     def draw_trend_map(self, **kwargs):
         self.M = SingleMap(self.X)
         self.M.plot(**kwargs)
+
+    def draw_cv_map(self, **kwargs):
+        """
+        show map of CV, which needs to be calculated before
+        """
+        self.Mcv = SingleMap(self.CV)
+        self.Mcv.plot(**kwargs)
 
 
 
