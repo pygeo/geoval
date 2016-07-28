@@ -63,33 +63,34 @@ class TestTrend(unittest.TestCase):
         self.assertEqual(len(P.lut),5)
         self.assertEqual(list(P.lut), [0.1,0.2,0.4,0.5,0.6])
 
-    #~ def test_interpolate(self):
-        #~ lutname, d = self._generate_sample_lut()
-        #~ P = MintrendPlot(lutname)
+    def test_interpolate(self):
+        lutname, d = self._generate_sample_lut()
+        P = MintrendPlot(lutname)
 #~
-        #~ # first interpolate to same coordinates as given
-        #~ # should give same results
-        #~ z = P._interpolate([1.], [10.])
-        #~ self.assertEqual(z[0,0],0.1)
-#~
-        #~ z = P._interpolate([2.], [10.])
-        #~ self.assertEqual(z[0,0],0.2)
-#~
-        #~ z = P._interpolate([1.], [20.])
-        #~ self.assertEqual(z[0,0],0.4)
-#~
-        #~ z = P._interpolate([2.], [20.])
-        #~ self.assertEqual(z[0,0],0.5)
-#~
-        #~ z = P._interpolate([3.], [20.])
-        #~ self.assertEqual(z[0,0],0.6)
-#~
-        #~ # now check real interpolation
-        #~ z = P._interpolate([2.], [15.])
-        #~ self.assertEqual(z[0,0],0.35)
-#~
-        #~ z = P._interpolate([1.], [15.])
-        #~ self.assertEqual(z[0,0],0.25)
+        # first interpolate to same coordinates as given
+        # should give same results
+        # cvs, means, phis
+        z = P._interpolate_fast([1.], [10.], [0.9])
+        self.assertEqual(z[0],0.1)
+
+        z = P._interpolate_fast([2.], [10.], [0.9])
+        self.assertEqual(z[0],0.2)
+
+        z = P._interpolate_fast([1.], [20.], [0.9])
+        self.assertEqual(z[0],0.4)
+
+        z = P._interpolate_fast([2.], [20.], [0.9])
+        self.assertEqual(z[0],0.5)
+
+        z = P._interpolate_fast([3.], [20.], [0.9])
+        self.assertEqual(z[0],0.6)
+
+        # now check real interpolation
+        z = P._interpolate_fast([2.], [15.], [0.9])
+        self.assertEqual(z[0],0.35)
+
+        z = P._interpolate_fast([1.], [15.], [0.9])
+        self.assertEqual(z[0],0.25)
 
     #~ def test_plot(self):
         #~ ny = 5

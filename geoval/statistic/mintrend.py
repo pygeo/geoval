@@ -2,6 +2,8 @@ import os
 import cPickle
 import numpy as np
 from scipy.interpolate import griddata
+from scipy.spatial import cKDTree
+
 from geoval.core import GeoData
 from geoval.core.mapping import SingleMap
 """
@@ -27,6 +29,7 @@ class MintrendPlot(object):
         self._lutname = lutname
         self._read_lut()
 
+
     def _read_lut(self):
         assert os.path.exists(self._lutname)
         d = cPickle.load(open(self._lutname,'r'))
@@ -46,29 +49,54 @@ class MintrendPlot(object):
 
         self.lut = d['res'][msk].flatten()
 
-    def _interpolate(self, tcvs, tmeans, tphis, method='linear'):
-        """
-        interpolate LUT to target using griddata
-        for this vectors of the variation coefficient
-        and mean is required
+    def _interpolate_fast(self, tcvs, tmeans, tphis):
+        #http://stackoverflow.com/questions/29974122/interpolating-data-from-a-look-up-table
 
-        tcvs : ndarray
-            list of variations of coefficient to interpolate to
-        tmeans : ndarray
-            list of mean values to interpolate to
-        tphis : ndarray
-            list of correlation values (phi)
-        method : str
-            methods used for interpolation ['cubic','linear']
-            for further details see documentation of griddata routine
-        """
+        # these are the target coordinates
         tcvs = np.asarray(tcvs)
         tmeans = np.asarray(tmeans)
         tphis = np.asarray(tphis)
 
+        coords = np.vstack((tphis, tmeans, tcvs)).T
+
+        xyz = np.vstack((self.phis, self.means, self.cvs)).T
+        val = self.lut
+
+        tree = cKDTree(xyz)
+        dist, ind = tree.query(coords, k=2)  # take 2 closest LUT points
+
+        d1,d2 = dist.T
+        v1,v2 = val[ind].T
+
+        v = (d1)/(d1 + d2)*(v2 - v1) + v1
+        return v
 
 
-        return griddata((self.phis,self.means,self.cvs), self.lut, (tphis[:,None],tmeans[None,:],tcvs[:,None]), method=method)
+
+
+    #~ def _interpolate_slow(self, tcvs, tmeans, tphis, method='linear'):
+        #~ """
+        #~ interpolate LUT to target using griddata
+        #~ for this vectors of the variation coefficient
+        #~ and mean is required
+#~
+        #~ tcvs : ndarray
+            #~ list of variations of coefficient to interpolate to
+        #~ tmeans : ndarray
+            #~ list of mean values to interpolate to
+        #~ tphis : ndarray
+            #~ list of correlation values (phi)
+        #~ method : str
+            #~ methods used for interpolation ['cubic','linear']
+            #~ for further details see documentation of griddata routine
+        #~ """
+        #~ tcvs = np.asarray(tcvs)
+        #~ tmeans = np.asarray(tmeans)
+        #~ tphis = np.asarray(tphis)
+#~
+#~
+#~
+        #~ return griddata((self.phis,self.means,self.cvs), self.lut, (tphis[:,None],tmeans[None,:],tcvs[:,None]), method=method)
 
     def _calc_cv(self, PHI, SLOPE, SIG_R, ME, var_t):
         """
@@ -151,14 +179,11 @@ class MintrendPlot(object):
 
         if do_calc:
             # interpolation
-            if True:
-                z = np.ones(len(means))*np.nan
-                for i in xrange(len(z)):
-                    if i % 1000 == 0:
-                        print i
-                    z[i] = self._interpolate([cvs[i]], [means[i]], [phis[i]])  # could be probably done more efficient
-            else:
-                z = self._interpolate(cvs, means, phis)
+
+            z = self._interpolate_fast(cvs, means, phis)
+
+
+
 
             # map back to original geometry
             tmp = np.ones(ME.nx*ME.ny)*np.nan
