@@ -336,6 +336,7 @@ class GeoData(object):
         if self.time_str is None:
             raise ValueError('date2num can not work without timestr!')
         else:
+            print self.calendar
             return self._netcdftime_date2num(t, self.time_str,
                                              calendar=self.calendar) - offset
 
@@ -1235,7 +1236,8 @@ class GeoData(object):
         else:
             self.time = None
 
-        # determine time
+        # determine time properly. before the time has
+        # already been read and time units and calendars have been set
         if self.time is not None:
             self.set_time()
 
@@ -1389,15 +1391,26 @@ class GeoData(object):
         """
 
 
-        years = np.asarray(map(np.floor, self.time))
+        #~ assert False, 'This conversion is not thoroughly validated yet!'
+        # problem is that due to the gregorian/julian calendar, 10 days are missing
+        # that results in a 28 minute shift each day! This is not fixed yet!
+
+        years = np.asarray(map(int, self.time)).astype('float')
         frac = self.time - years
         isleap = np.asarray(map(calendar.isleap, years))
         ndays = np.ones_like(years)*365.
         ndays[isleap] = 366.
-        days = frac*ndays
+        days = ndays*frac
+        #~ print self.time[0:5]
+        #~ print years[0:5]
+        #~ print frac[0:5]*100000.
+        #~ print days[0:5]
+
+        #fraction is too small ini the end ??? but CDOs do right ???
 
         T = []
         for i in xrange(len(years)):
+
             d = datetime.datetime(int(years[i]),1,1)+relativedelta.relativedelta(days=days[i])
             T.append(d)
 
@@ -1557,7 +1570,6 @@ class GeoData(object):
         return res
 
 
-
     def set_time(self):
         """
         convert times that are in a specific format
@@ -1572,12 +1584,11 @@ class GeoData(object):
         if not hasattr(self, 'time'):
             raise ValueError('ERROR: no time specified!')
 
-
         if self.time_str == 'day as %Y%m%d.%f':
             # in case of YYYYMMDD, convert to other time with basedate
             # 0001-01-01 00:00:00
             self._convert_time()
-        if self.time_str == 'day as YYYYMMDD':
+        elif self.time_str == 'day as YYYYMMDD':
             self._convert_time_YYYYMMDD()
         elif self.time_str == 'day as YYYYMMDDhhmm':
             self._convert_time_YYYYMMDDhhmm()
@@ -1594,6 +1605,9 @@ class GeoData(object):
             # actually nothing needs to be done, as everything shall
             # be handled by self.num2date() in all subsequent subroutines
             # to properly handle difference in different calendars.
+        #~ elif 'years since' in self.time_str:
+            #~ self._convert_yearly_timeseries()
+
 
 
     def apply_temporal_subsetting(self, start_date, stop_date):
@@ -1829,11 +1843,6 @@ class GeoData(object):
             tvar = File.get_variable_handler(self.time_var)
             if hasattr(tvar, 'units'):
                 self.time_str = tvar.units
-
-                if self.time_str == 'years since 0-01-01 00:00:00':
-                    self.time_str = 'year as %Y.%f'   # change string to support netcdf4 time library
-
-
             else:
                 self.time_str = None
 
@@ -4810,7 +4819,50 @@ class GeoData(object):
         self.calendar = 'standard'
         self.time_str = 'days since 0001-01-01 00:00:00'
         # plus one because of the num2date() basedate definition
-        self.time = plt.date2num(newtime) + 1.
+        # self.time = plt.date2num(newtime) + 1.
+        self.time = self.date2num(newtime)
+
+
+    #~ def _convert_yearly_timeseries(self):
+        #~ """
+        #~ comnvert yearly timeseries, as the YEARS SINCE option
+        #~ is not supported yet by the netCDF4 time functions
+#~
+        #~ Caution needs to be taken for choosing the right calendars
+        #~ due to 10 missing days (1582-10-05 ... 1582-10-14) in the mixed
+        #~ gregorian/julian calendar
+        #~ """
+        #~ assert 'years since' in self.time_str
+        #~ basestr = self.time_str.split('since')[1].lstrip()
+        #~ fmt =  '%Y-%m-%d %H:%M:%S'
+        #~ basedate = datetime.datetime.strptime(basestr, fmt)  # datetime object
+        #~ newtime = []
+        #~ for i in xrange(len(self.time)):
+            #~ Y,M,D,h,m,s = self._split_time_float(self.time[i])
+            #~ newdate.append(basedate + relativedelta.relativedelta(years=Y,months=M,days=D,hours=h,minutes=m,seconds=s))
+#~
+        #~ self.calendar = 'standard'
+        #~ self.time_str = 'days since 0001-01-01 00:00:00'
+        #~ self.time = self.date2num(newtime)
+
+    #~ def _split_time_float(self, t):
+        #~ """
+        #~ given a float number that should represent year/fractions
+        #~ this routine is supposed to return the years/months/days/hours/minutes/seconds
+#~
+        #~ Parameters
+        #~ ----------
+        #~ t : float
+            #~ scalar time indicator
+        #~ """
+        #~ Y = int(t)
+        #~ M = 0
+        #~ D = 0
+        #~ h = 0
+        #~ m = 0
+        #~ s = 0
+        #~ return Y,M,D,h,m,s
+
 
 
     def get_shape_statistics(self,regions): #written before geoval was implemented

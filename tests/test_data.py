@@ -2339,11 +2339,37 @@ class TestData(unittest.TestCase):
         self.assertEqual(d.date[1].minute, 0)
         self.assertEqual(d.date[1].second, 0)
 
+    #~ def test_split_time_float(self):
+        #~ d = self.D.copy()
+#~
+        #~ Y,M,D,h,m,s = d._split_time_float(2.)
+        #~ self.assertEqual(Y, 2)
+        #~ self.assertEqual(M, 0)
+        #~ self.assertEqual(D, 0)
+        #~ self.assertEqual(h, 0)
+        #~ self.assertEqual(m, 0)
+        #~ self.assertEqual(s, 0)
+#~
+        #~ Y,M,D,h,m,s = d._split_time_float(4.5)
+        #~ self.assertEqual(Y, 4)
+        #~ self.assertEqual(M, 6)
+        #~ self.assertEqual(D, 0)
+        #~ self.assertEqual(h, 0)
+        #~ self.assertEqual(m, 0)
+        #~ self.assertEqual(s, 0)
+
+
+        #~ how to treat leap years ???
+
+
+
+
+
     def test_convert_timeYYYY(self):
         d = self.D.copy()
 
         # no leap year
-        d.time = np.asarray([1999., 1999.0 + 23./(365.*24.), 1999.0 + 2./365. + 20./(365.*24.), 1999.0 + 59./365.    ]) # 23:00
+        d.time = np.asarray([1999., 1999.0 + 23./(365.*24.), 1999.0 + 2./365. + 20./(365.*24.), 1999.0 + 59./365., 1999.+1./(365.*24.)    ]) # 23:00
         d._convert_timeYYYY()
         k = 0
         self.assertEqual(d.date[k].year, 1999)
@@ -2366,12 +2392,18 @@ class TestData(unittest.TestCase):
         self.assertEqual(d.date[k].hour, 20)
         self.assertEqual(d.date[k].minute, 0)
         self.assertEqual(d.date[k].second, 0)
-
         k = 3
         self.assertEqual(d.date[k].year, 1999)
         self.assertEqual(d.date[k].month, 3)
         self.assertEqual(d.date[k].day, 1)
         self.assertEqual(d.date[k].hour, 0)
+        self.assertEqual(d.date[k].minute, 0)
+        self.assertEqual(d.date[k].second, 0)
+        k = 4
+        self.assertEqual(d.date[k].year, 1999)
+        self.assertEqual(d.date[k].month, 1)
+        self.assertEqual(d.date[k].day, 1)
+        self.assertEqual(d.date[k].hour, 1)
         self.assertEqual(d.date[k].minute, 0)
         self.assertEqual(d.date[k].second, 0)
 
