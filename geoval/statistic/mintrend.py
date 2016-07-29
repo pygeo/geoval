@@ -198,7 +198,7 @@ class MintrendPlot(object):
 
 
 
-    def draw_trend_map(self, decade=True, **kwargs):
+    def draw_trend_map(self, decade=True, ax=None, **kwargs):
         if decade:  # show trends per decade
             if self.X._trend_unit == 'year':
                 scal = 10.
@@ -209,14 +209,14 @@ class MintrendPlot(object):
         else:
             X = self.X
 
-        self.M = SingleMap(X)
+        self.M = SingleMap(X, ax=ax)
         self.M.plot(**kwargs)
 
-    def draw_cv_map(self, **kwargs):
+    def draw_cv_map(self, ax=None, **kwargs):
         """
         show map of CV, which needs to be calculated before
         """
-        self.Mcv = SingleMap(self.CV)
+        self.Mcv = SingleMap(self.CV, ax=ax)
         self.Mcv.plot(**kwargs)
 
 
