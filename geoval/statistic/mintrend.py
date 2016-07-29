@@ -122,11 +122,12 @@ class MintrendPlot(object):
         self.CV = CV
 
 
-    def map_trends(self, SIG_R, ME, PHI, SLOPE, var_t, force=False):
+    def map_trends(self, SIG_R, ME, PHI, SLOPE, var_t, force=False, time_unit=None):
         """
         STD : GeoData
         ME : GeoData
         """
+        assert time_unit is not None, 'Time unit needs to be provided'
 
         if SIG_R.ndim == 3:
             if SIG_R.nt == 1:
@@ -182,9 +183,6 @@ class MintrendPlot(object):
 
             z = self._interpolate_fast(cvs, means, phis)
 
-
-
-
             # map back to original geometry
             tmp = np.ones(ME.nx*ME.ny)*np.nan
             tmp[msk.flatten()] = z
@@ -195,11 +193,24 @@ class MintrendPlot(object):
             X.data = np.ma.array(tmp, mask=tmp != tmp)
 
             self.X = X
+            self.X.unit = 'trend / ' + time_unit
+            self.X._trend_unit = time_unit
 
 
 
-    def draw_trend_map(self, **kwargs):
-        self.M = SingleMap(self.X)
+    def draw_trend_map(self, decade=True, **kwargs):
+        if decade:  # show trends per decade
+            if self.X._trend_unit == 'year':
+                scal = 10.
+            else:
+                assert False, 'Unknown temporal unit. Automatic rescaling not possible'
+            X = self.X.mulc(scal)
+            X.unit = 'trend / decade'
+        else:
+            X = self.X
+
+
+        self.M = SingleMap(X)
         self.M.plot(**kwargs)
 
     def draw_cv_map(self, **kwargs):
