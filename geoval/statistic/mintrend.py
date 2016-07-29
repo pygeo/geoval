@@ -65,6 +65,17 @@ class MintrendPlot(object):
         tree = cKDTree(xyz)
         dist, ind = tree.query(coords, k=2)  # take 2 closest LUT points
 
+        # the problem can occur that  an invali index is returned.
+        # if this corresponds to the boundary, then this is a hacked fix
+        # this seems to be a proble in the cKDTree
+        ind[ind==len(val)]=len(val)-1
+
+
+
+        print 'ncoords: ', coords.shape
+        print 'indx: ', ind.min(), ind.max(), ind.shape
+        print 'val: ', val.min(), val.max(), val.shape
+        
         d1,d2 = dist.T
         v1,v2 = val[ind].T
 
