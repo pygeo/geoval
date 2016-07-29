@@ -209,7 +209,6 @@ class MintrendPlot(object):
         else:
             X = self.X
 
-
         self.M = SingleMap(X)
         self.M.plot(**kwargs)
 
