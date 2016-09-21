@@ -69,6 +69,17 @@ class MintrendPlot(object):
         tree = cKDTree(xyz)
         dist, ind = tree.query(coords, k=2)  # take 2 closest LUT points
 
+        # the problem can occur that  an invali index is returned.
+        # if this corresponds to the boundary, then this is a hacked fix
+        # this seems to be a proble in the cKDTree
+        ind[ind==len(val)]=len(val)-1
+
+
+
+        print 'ncoords: ', coords.shape
+        print 'indx: ', ind.min(), ind.max(), ind.shape
+        print 'val: ', val.min(), val.max(), val.shape
+
         d1,d2 = dist.T
         v1,v2 = val[ind].T
 
@@ -200,14 +211,17 @@ class MintrendPlot(object):
             self.X.unit = 'trend / ' + time_unit
             self.X._trend_unit = time_unit
 
+    def _get_temporal_scaling_factor(self):
+        if self.X._trend_unit == 'year':
+            scal = 10.
+        else:
+            assert False, 'Unknown temporal unit. Automatic rescaling not possible'
+        return scal
 
 
     def draw_trend_map(self, decade=True, ax=None, **kwargs):
         if decade:  # show trends per decade
-            if self.X._trend_unit == 'year':
-                scal = 10.
-            else:
-                assert False, 'Unknown temporal unit. Automatic rescaling not possible'
+            scal= self._get_temporal_scaling_factor()
             X = self.X.mulc(scal)
             X.unit = 'trend / decade'
         else:
@@ -222,6 +236,29 @@ class MintrendPlot(object):
         """
         self.Mcv = SingleMap(self.CV, ax=ax, backend=self.backend)
         self.Mcv.plot(**kwargs)
+
+    def draw_relative_trend(self, M, decade=True, ax=None, **kwargs):
+        """
+        generate a relative trend map
+        the trend mapping needs to have been performed already
+
+        Parameters
+        ==========
+        M : GeoData
+            mean value
+        """
+        assert ax is not None
+        assert hasattr(self, 'X'), 'mintrend has not been preprocessed'
+
+        scal= self._get_temporal_scaling_factor()
+        X = self.X.mulc(scal).div(M).mulc(100.)
+        X.unit = '% / decade'
+
+        self.Mr = SingleMap(X, ax=ax)
+        self.Mr.plot(**kwargs)
+
+
+
 
 
 
