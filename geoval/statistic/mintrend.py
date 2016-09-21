@@ -18,16 +18,20 @@ class MintrendPlot(object):
     and that also the STDV and MEAN (timstd, timmean)
     are required for plotting final data
     """
-    def __init__(self, lutname):
+    def __init__(self, lutname, backend='imshow'):
         """
         Parameters
         ----------
         lutname : str
             name of LUT file derived from mintrend analysis
+        backend : str
+            backend used for plotting ['imshow','basemap']
 
         """
         self._lutname = lutname
+        self.backend=backend
         self._read_lut()
+
 
 
     def _read_lut(self):
@@ -209,14 +213,14 @@ class MintrendPlot(object):
         else:
             X = self.X
 
-        self.M = SingleMap(X, ax=ax)
+        self.M = SingleMap(X, ax=ax, backend=self.backend)
         self.M.plot(**kwargs)
 
     def draw_cv_map(self, ax=None, **kwargs):
         """
         show map of CV, which needs to be calculated before
         """
-        self.Mcv = SingleMap(self.CV, ax=ax)
+        self.Mcv = SingleMap(self.CV, ax=ax, backend=self.backend)
         self.Mcv.plot(**kwargs)
 
 
