@@ -18,7 +18,7 @@ class MintrendPlot(object):
     and that also the STDV and MEAN (timstd, timmean)
     are required for plotting final data
     """
-    def __init__(self, lutname, backend='imshow'):
+    def __init__(self, lutname, backend='imshow', proj_prop=None):
         """
         Parameters
         ----------
@@ -30,6 +30,7 @@ class MintrendPlot(object):
         """
         self._lutname = lutname
         self.backend=backend
+        self.proj_prop = proj_prop
         self._read_lut()
 
 
@@ -228,14 +229,14 @@ class MintrendPlot(object):
             X = self.X
 
         self.M = SingleMap(X, ax=ax, backend=self.backend)
-        self.M.plot(**kwargs)
+        self.M.plot(proj_prop=self.proj_prop, **kwargs)
 
     def draw_cv_map(self, ax=None, **kwargs):
         """
         show map of CV, which needs to be calculated before
         """
         self.Mcv = SingleMap(self.CV, ax=ax, backend=self.backend)
-        self.Mcv.plot(**kwargs)
+        self.Mcv.plot(proj_prop=self.proj_prop, **kwargs)
 
     def draw_relative_trend(self, M, decade=True, ax=None, **kwargs):
         """
@@ -255,7 +256,7 @@ class MintrendPlot(object):
         X.unit = '% / decade'
 
         self.Mr = SingleMap(X, ax=ax)
-        self.Mr.plot(**kwargs)
+        self.Mr.plot(proj_prop=self.proj_prop, **kwargs)
 
 
 
