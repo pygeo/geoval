@@ -209,6 +209,8 @@ class MintrendPlot(object):
             X.data = np.ma.array(tmp, mask=tmp != tmp)
 
             self.X = X
+            self.X.lon = ME.lon*1.
+            self.X.lat = ME.lat*1.
             self.X.unit = 'trend / ' + time_unit
             self.X._trend_unit = time_unit
 
