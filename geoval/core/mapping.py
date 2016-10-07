@@ -16,12 +16,12 @@ import os
 # note that this import statement needs to come BEFORE basemap, as
 # otherwise some cartopy libraries are not found for some strange reasons
 # (at least on some machines)
-# try:
-#     import cartopy.crs as ccrs
-#     installed_backends.append('cartopy')
-# except:
-#     print(
-#         'WARNING: CARTOPY seems not to be installed and can therefore not be used as plotting backend')
+try:
+    import cartopy.crs as ccrs
+    installed_backends.append('cartopy')
+except:
+    print(
+         'WARNING: CARTOPY seems not to be installed and can therefore not be used as plotting backend')
 
 try:
     from mpl_toolkits.basemap import Basemap
@@ -93,8 +93,8 @@ class MapPlotGeneric(object):
             self._draw = self._draw_imshow
         elif self.backend == 'basemap':
             self._draw = self._draw_basemap
-##        elif self.backend == 'cartopy':
-##            self._draw = self._draw_cartopy
+        elif self.backend == 'cartopy':
+            self._draw = self._draw_cartopy
         else:
             raise ValueError('Unknown backend!')
 
@@ -202,15 +202,15 @@ class MapPlotGeneric(object):
         if self.backend not in installed_backends:
             print installed_backends
             raise ValueError('Invalid plotting backend: %s' % self.backend)
-##        if self.backend == 'basemap':
-##            if 'cartopy' in installed_backends:
-##                # use cartopy instead of Basemap, when possible
-##                print(
-##                    'INFO: The backend has been automatically switched to CARTOPY as this provides higher quality and faster plotting on your machine')
-##                self.backend = 'cartopy'
-##            else:
-##                print(
-##                    'INFO: You have chosen BASEMAP as plotting backend. It is recommended to use CARTOPY instead as it is faster and also provides higher quality plotting capabilities.')
+        if self.backend == 'basemap':
+            if 'cartopy' in installed_backends:
+                # use cartopy instead of Basemap, when possible
+                print(
+                    'INFO: The backend has been automatically switched to CARTOPY as this provides higher quality and faster plotting on your machine')
+                self.backend = 'cartopy'
+            else:
+                print(
+                    'INFO: You have chosen BASEMAP as plotting backend. It is recommended to use CARTOPY instead as it is faster and also provides higher quality plotting capabilities.')
 
     def _draw_basemap(self, proj_prop=None, drawparallels=True, vmin_polygons=None, vmax_polygons=None, **kwargs):
         """
@@ -271,136 +271,136 @@ class MapPlotGeneric(object):
 ##            xy, edgecolor=color, linewidth=linewidth, fill=False)
 ##        self.pax.add_patch(mapboundary)
 ##
-##    # convert normal axis to GeoAxis
-##    def _ax2geoax(self, ax, ccrs_obj):
-##        """
-##        This routine converts a given matplotlib axis to a GeoAxis.
-##        It is ensured that the axis has the same position and size.
-##        Parameters
-##        ----------
-##        ax : axis
-##            matplotlib axis to be modified
-##        ccrs_obj : cartopy.crs
-##            reference system object
-##        Example
-##        -------
-##        ax2 = _ax2geoax(ax2, ccrs.Robinson())
-##        """
-##        b = ax.get_position()
-##        rect = [b.x0, b.y0, b.width, b.height]
-##        ax.set_visible(False)
-##        return ax.figure.add_axes(rect, label="pax", projection=ccrs_obj)
-##
-##    def _draw_cartopy(self, proj_prop=None, vmin_polygons=None, vmax_polygons=None, **kwargs):
-##        if proj_prop is None:
-##            raise ValueError(
-##                'No projection properties are given! Please modify or choose a different backend!')
-##
-##        if proj_prop['projection'] in ['robin', 'TransverseMercator', 'mercator', 'stereo']:
-##            pass
-##        else:
-##            raise ValueError('Unsupported projection type')
-##
-##        if hasattr(self.x, 'data'):
-##            plot_data_field = True
-##        else:
-##            plot_data_field = False
-##
-##        if plot_data_field:
-##            xm = self.x.timmean()
-##            Z = xm
-##            lon = self.x.lon
-##            lat = self.x.lat
-##
-##            if np.prod(lon.shape) == 0:  # no geometry
-##                print 'ERROR: invalid shape for plotting!'
-##                return
-##
-##        if proj_prop['projection'] == 'robin':
-##            act_ccrs = ccrs.Robinson()
-##        elif proj_prop['projection'] == 'stereo':
-##            act_ccrs = ccrs.Stereographic(central_longitude=proj_prop.pop(
-##                'central_longitude', 0.), central_latitude=proj_prop.pop('central_latitude', 0.))
-##        elif proj_prop['projection'] == 'TransverseMercator':
-##            act_ccrs = ccrs.TransverseMercator(central_longitude=proj_prop.pop(
-##                'central_longitude', 0.), central_latitude=proj_prop.pop('central_latitude', 0.))
-##        elif proj_prop['projection'] == 'mercator':
-##            if 'extent' in proj_prop.keys():
-##                ymin = proj_prop['extent']['ymin']
-##                ymax = proj_prop['extent']['ymax']
-##            else:
-##                raise ValueError('Need to specify extent!')
-##            act_ccrs = ccrs.Mercator(central_longitude=proj_prop.pop(
-##                'central_longitude', 0.), min_latitude=ymin, max_latitude=ymax)
-##        else:
-##            raise ValueError('Unsupported projection')
-##
-##        self.pax = self._ax2geoax(self.pax, act_ccrs)
-##
-##        # add cyclic coordinates if possible
-##        if plot_data_field:
-##            if self.x._equal_lon():
-##                try:
-##                    lon1, lat1, Z1 = self._add_cyclic_to_field(
-##                        self.x._get_unique_lon(), lat, Z)
-##                except:
-##                    lon1 = None
-##                if lon1 is not None:
-##                    lon = lon1
-##                    lat = lat1
-##                    Z = Z1
-##
-##        # plot and ancillary plots
-##        if 'extent' in proj_prop.keys():
-##            if proj_prop['projection'] == 'mercator':
-##                pass
-##            else:
-##                xmin = proj_prop['extent']['xmin']
-##                xmax = proj_prop['extent']['xmax']
-##                ymin = proj_prop['extent']['ymin']
-##                ymax = proj_prop['extent']['ymax']
-##                try:
-##                    # , crs=act_ccrs)  # problem was fixed by explicitely setting CRS
-##                    self.pax.set_extent([xmin, xmax, ymin, ymax])
-##                    # NO! the problem can not be fixed by providing the CRS
-##                    # explicitely! this results in strange results for the
-##                    # final maps!
-##                except:
-##                    print 'ERROR in set_extent. This is a known problem for cartopy geoaxes (see documentation in set_extent routine). Can not be fixed here.'
-##                    # try workaround
-##                    try:
-##                        # problem might be fixed by explicitely setting CRS
-##                        self.pax.set_extent(
-##                            [xmin, xmax, ymin, ymax], crs=act_ccrs)
-##                        # CAUTION This can result however in weird plots!!!
-##                        # Caused problems in the past!
-##                    except:
-##                        print 'Workaround did also not work, try to continue without setting extent!'
-##        else:
-##            self.pax.set_global()  # ensure global plot
-##        self.pax.coastlines()
-##
-##        if plot_data_field:
-##            try:
-##                self.im = self.pax.pcolormesh(
-##                    lon, lat, Z, transform=ccrs.PlateCarree(), **kwargs)
-##            except:
-##                print '*** WARNING: something did not work with pcolormesh plotting in mapping.py'
-##                self.im = None
-##        else:
-##            self.im = None
-##
-##        self.pax.gridlines()
-##
-##        # plot polygons
-##        if self.polygons is not None:
-##            if len(self.polygons) > 0:
-##                if False:  # plot all polygons individually
-##                    for p in self.polygons:
-##                        self._add_single_polygon_cartopy(p)
-##                else:  # all polygons as collection
-##                    self._add_polygons_as_collection_cartopy(
-##                        act_ccrs, vmin=vmin_polygons, vmax=vmax_polygons)
+    # convert normal axis to GeoAxis
+    def _ax2geoax(self, ax, ccrs_obj):
+        """
+        This routine converts a given matplotlib axis to a GeoAxis.
+        It is ensured that the axis has the same position and size.
+        Parameters
+        ----------
+        ax : axis
+            matplotlib axis to be modified
+        ccrs_obj : cartopy.crs
+            reference system object
+        Example
+        -------
+        ax2 = _ax2geoax(ax2, ccrs.Robinson())
+        """
+        b = ax.get_position()
+        rect = [b.x0, b.y0, b.width, b.height]
+        ax.set_visible(False)
+        return ax.figure.add_axes(rect, label="pax", projection=ccrs_obj)
+
+    def _draw_cartopy(self, proj_prop=None, vmin_polygons=None, vmax_polygons=None, **kwargs):
+        if proj_prop is None:
+            raise ValueError(
+                'No projection properties are given! Please modify or choose a different backend!')
+
+        if proj_prop['projection'] in ['robin', 'TransverseMercator', 'mercator', 'stereo']:
+            pass
+        else:
+            raise ValueError('Unsupported projection type')
+
+        if hasattr(self.x, 'data'):
+            plot_data_field = True
+        else:
+            plot_data_field = False
+
+        if plot_data_field:
+            xm = self.x.timmean()
+            Z = xm
+            lon = self.x.lon
+            lat = self.x.lat
+
+            if np.prod(lon.shape) == 0:  # no geometry
+                print 'ERROR: invalid shape for plotting!'
+                return
+
+        if proj_prop['projection'] == 'robin':
+            act_ccrs = ccrs.Robinson()
+        elif proj_prop['projection'] == 'stereo':
+            act_ccrs = ccrs.Stereographic(central_longitude=proj_prop.pop(
+                'central_longitude', 0.), central_latitude=proj_prop.pop('central_latitude', 0.))
+        elif proj_prop['projection'] == 'TransverseMercator':
+            act_ccrs = ccrs.TransverseMercator(central_longitude=proj_prop.pop(
+                'central_longitude', 0.), central_latitude=proj_prop.pop('central_latitude', 0.))
+        elif proj_prop['projection'] == 'mercator':
+            if 'extent' in proj_prop.keys():
+                ymin = proj_prop['extent']['ymin']
+                ymax = proj_prop['extent']['ymax']
+            else:
+                raise ValueError('Need to specify extent!')
+            act_ccrs = ccrs.Mercator(central_longitude=proj_prop.pop(
+                'central_longitude', 0.), min_latitude=ymin, max_latitude=ymax)
+        else:
+            raise ValueError('Unsupported projection')
+
+        self.pax = self._ax2geoax(self.pax, act_ccrs)
+
+        # add cyclic coordinates if possible
+        if plot_data_field:
+            if self.x._equal_lon():
+                try:
+                    lon1, lat1, Z1 = self._add_cyclic_to_field(
+                        self.x._get_unique_lon(), lat, Z)
+                except:
+                    lon1 = None
+                if lon1 is not None:
+                    lon = lon1
+                    lat = lat1
+                    Z = Z1
+
+        # plot and ancillary plots
+        if 'extent' in proj_prop.keys():
+            if proj_prop['projection'] == 'mercator':
+                pass
+            else:
+                xmin = proj_prop['extent']['xmin']
+                xmax = proj_prop['extent']['xmax']
+                ymin = proj_prop['extent']['ymin']
+                ymax = proj_prop['extent']['ymax']
+                try:
+                    # , crs=act_ccrs)  # problem was fixed by explicitely setting CRS
+                    self.pax.set_extent([xmin, xmax, ymin, ymax])
+                    # NO! the problem can not be fixed by providing the CRS
+                    # explicitely! this results in strange results for the
+                    # final maps!
+                except:
+                    print 'ERROR in set_extent. This is a known problem for cartopy geoaxes (see documentation in set_extent routine). Can not be fixed here.'
+                    # try workaround
+                    try:
+                        # problem might be fixed by explicitely setting CRS
+                        self.pax.set_extent(
+                            [xmin, xmax, ymin, ymax], crs=act_ccrs)
+                        # CAUTION This can result however in weird plots!!!
+                        # Caused problems in the past!
+                    except:
+                        print 'Workaround did also not work, try to continue without setting extent!'
+        else:
+            self.pax.set_global()  # ensure global plot
+        self.pax.coastlines()
+
+        if plot_data_field:
+            try:
+                self.im = self.pax.pcolormesh(
+                    lon, lat, Z, transform=ccrs.PlateCarree(), **kwargs)
+            except:
+                print '*** WARNING: something did not work with pcolormesh plotting in mapping.py'
+                self.im = None
+        else:
+            self.im = None
+
+        self.pax.gridlines()
+
+        # plot polygons
+        if self.polygons is not None:
+            if len(self.polygons) > 0:
+                if False:  # plot all polygons individually
+                    for p in self.polygons:
+                        self._add_single_polygon_cartopy(p)
+                else:  # all polygons as collection
+                    self._add_polygons_as_collection_cartopy(
+                        act_ccrs, vmin=vmin_polygons, vmax=vmax_polygons)
 ##
 ##    def _add_collection(self, collection):
 ##        if self.backend == 'imshow':
@@ -545,45 +545,45 @@ class MapPlotGeneric(object):
 ##        self.pax.plot(lons, lats, transform=ccrs.PlateCarree(),
 ##                      color=color, linewidth=linewidth)
 ##
-##    def _add_cyclic_to_field(self, lon, lat, z):
-##        """
-##        add an additional column to a dataset to avoid plotting problems
-##        around the 0degree longitude
-##        Parameters
-##        ----------
-##        lon : ndarray
-##            VECTOR of unique longitudes. Note that this needs to be a vector!
-##        lat : ndarray
-##            2D array of latitudes with same geometry than the data field Z
-##        z : ndarray
-##            2D array of values
-##        Returns
-##        -------
-##        lon : ndarray
-##            2D
-##        lat : ndarray
-##            2D
-##        Z : ndarray
-##            2D
-##        References
-##        ----------
-##        [1] https://github.com/SciTools/cartopy/issues/393
-##        [2] http://stackoverflow.com/questions/21864512/cartopy-behavior-when-plotting-projected-data
-##        [3] https://github.com/SciTools/cartopy/pull/394
-##        """
-##        try:
-##            from cartopy import util as ut
-##        except:
-##            print(
-##                'Longitude shift can not be performed as most recent CARTOPY version seems not to be installed')
-##            return None, None, None
-##        assert lon.ndim == 1
-##        assert lat.shape == z.shape
-##
-##        lat_out, lon1 = ut.add_cyclic_point(lat, coord=lon)
-##        z_out, lon1 = ut.add_cyclic_point(z, coord=lon)
-##        lon_out = np.ones_like(lat_out) * lon1
-##        return lon_out, lat_out, z_out
+    def _add_cyclic_to_field(self, lon, lat, z):
+        """
+        add an additional column to a dataset to avoid plotting problems
+        around the 0degree longitude
+        Parameters
+        ----------
+        lon : ndarray
+            VECTOR of unique longitudes. Note that this needs to be a vector!
+        lat : ndarray
+            2D array of latitudes with same geometry than the data field Z
+        z : ndarray
+            2D array of values
+        Returns
+        -------
+        lon : ndarray
+            2D
+        lat : ndarray
+            2D
+        Z : ndarray
+            2D
+        References
+        ----------
+        [1] https://github.com/SciTools/cartopy/issues/393
+        [2] http://stackoverflow.com/questions/21864512/cartopy-behavior-when-plotting-projected-data
+        [3] https://github.com/SciTools/cartopy/pull/394
+        """
+        try:
+            from cartopy import util as ut
+        except:
+            print(
+                'Longitude shift can not be performed as most recent CARTOPY version seems not to be installed')
+            return None, None, None
+        assert lon.ndim == 1
+        assert lat.shape == z.shape
+
+        lat_out, lon1 = ut.add_cyclic_point(lat, coord=lon)
+        z_out, lon1 = ut.add_cyclic_point(z, coord=lon)
+        lon_out = np.ones_like(lat_out) * lon1
+        return lon_out, lat_out, z_out
 
     def __basemap_ancillary(self, m, latvalues=None, lonvalues=None,
                             drawparallels=True, drawcountries=True,
@@ -698,8 +698,8 @@ class SingleMap(MapPlotGeneric):
         """
         Parameters
         ----------
-        X : Data
-            Data object with data to plot
+        X : GeoData
+            GeoData object with data to plot
         """
         assert(isinstance(x, GeoData))
         super(SingleMap, self).__init__(**kwargs)
@@ -885,10 +885,10 @@ class SingleMap(MapPlotGeneric):
             self._draw(
                 vmin=self.vmin, vmax=self.vmax, cmap=self.cmap, proj_prop=proj_prop,
                 drawparallels=drawparallels, vmin_polygons=vmin_polygons, vmax_polygons=vmax_polygons)
-##        elif self.backend == 'cartopy':
-##            self._draw(
-##                vmin=self.vmin, vmax=self.vmax, cmap=self.cmap, proj_prop=proj_prop,
-##                vmin_polygons=vmin_polygons, vmax_polygons=vmax_polygons)
+        elif self.backend == 'cartopy':
+            self._draw(
+                vmin=self.vmin, vmax=self.vmax, cmap=self.cmap, proj_prop=proj_prop,
+                vmin_polygons=vmin_polygons, vmax_polygons=vmax_polygons)
         else:
             self._draw(vmin=self.vmin, vmax=self.vmax, cmap=self.cmap)
 
@@ -1214,7 +1214,7 @@ def map_plot(x, use_basemap=False, show_zonal=False,
     SingleMap object for plotting
     Parameters
     ----------
-    x : Data
+    x : GeoData
         data object to be plotted
     """
 

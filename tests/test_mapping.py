@@ -29,10 +29,14 @@ class TestData(unittest.TestCase):
         S.plot()
 
     def test_basemap(self):
-        # test simple mapping using imshow only
+        # test simple mapping using basemap
         S = SingleMap(self.D, backend='imshow')
         S.plot()
 
+    def test_cartopy(self):
+        # test simple mapping using cartopy
+        S = SingleMap(self.D, backend='cartopy')
+        S.plot(proj_prop={'projection' : 'robin'})
 
 
 
