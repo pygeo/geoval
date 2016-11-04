@@ -350,7 +350,7 @@ class GeoData(object):
         if self.time_str is None:
             raise ValueError('date2num can not work without timestr!')
         else:
-            print self.calendar
+            #print self.calendar
             return self._netcdftime_date2num(t, self.time_str,
                                              calendar=self.calendar) - offset
 
