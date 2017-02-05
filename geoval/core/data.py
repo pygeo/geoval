@@ -2379,7 +2379,7 @@ class GeoData(object):
             raise ValueError(
                 'weighting matrix not supported for this data shape')
 
-    def fldmean(self, return_data=False, apply_weights=True):
+    def fldmean(self, return_data=True, apply_weights=True):
         """
         calculate mean of the spatial field for each time using weighted averaging
         results are exactly the same as one would obtain with the similar
