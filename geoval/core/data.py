@@ -170,12 +170,6 @@ class GeoData(object):
         return self.data.ndim
     ndim = property(_get_ndim)
 
-
-
-
-
-
-
     def _get_nt(self):
         return len(self.time)
     nt = property(_get_nt)
@@ -200,7 +194,7 @@ class GeoData(object):
         return nx
     nx = property(_get_nx)
 
-    def get_center_data(self, return_object=False, flatten=False):
+    def get_center_data(self, return_object=True, flatten=False):
         """
         returns data for center position
 
@@ -1524,7 +1518,7 @@ class GeoData(object):
 
 
 
-    def get_zonal_mean(self, return_object=False):
+    def get_zonal_mean(self, return_object=True):
         """
         calculate zonal mean statistics of the data for each timestep
         returns zonal statistics [time,ny]
@@ -1875,7 +1869,7 @@ class GeoData(object):
 
         return data
 
-    def temporal_trend(self, return_object=False, pthres=1.01):
+    def temporal_trend(self, return_object=True, pthres=1.01):
         """
         calculate temporal trend of the data over time
         the slope of the temporal trend has unit [dataunit/day]
@@ -1913,7 +1907,7 @@ class GeoData(object):
         else:
             return R.data, S.data, I.data, P.data
 
-    def timmean(self, return_object=False):
+    def timmean(self, return_object=True):
         """
         calculate temporal mean of data field
         Parameters
@@ -1940,7 +1934,7 @@ class GeoData(object):
             return res
 
 
-    def timvar(self, return_object=False):
+    def timvar(self, return_object=True):
         """
         calculate temporal variance of data field
 
@@ -1968,7 +1962,7 @@ class GeoData(object):
         else:
             return res
 
-    def timsum(self, return_object=False):
+    def timsum(self, return_object=True):
         """
         calculate temporal sum of data field
 
@@ -1999,7 +1993,7 @@ class GeoData(object):
             return res
 
 
-    def timn(self, return_object=False):
+    def timn(self, return_object=True):
         """
         calculate number of valid samples per time
         The implementation is by using timmean() and timsum()
@@ -2009,7 +2003,7 @@ class GeoData(object):
         return_object : bool
             return Data object
         """
-        res = self.timsum() / self.timmean()
+        res = self.timsum(return_object=False) / self.timmean(return_object=False)
 
         if return_object:
             if res is None:
@@ -2022,7 +2016,7 @@ class GeoData(object):
             return res
 
 
-    def timstd(self, return_object=False):
+    def timstd(self, return_object=True):
         """
         calculate temporal standard deviation of data field
 
@@ -2054,7 +2048,7 @@ class GeoData(object):
             return res
 
 
-    def timmin(self, return_object=False):
+    def timmin(self, return_object=True):
         """
         calculate temporal minimum of data field
 
@@ -2083,7 +2077,7 @@ class GeoData(object):
         else:
             return res
 
-    def timmax(self, return_object=False):
+    def timmax(self, return_object=True):
         """
         calculate temporal maximum of data field
 
@@ -2142,7 +2136,7 @@ class GeoData(object):
             return res
 
 
-    def timsort(self, return_object=False):
+    def timsort(self, return_object=True):
         """
         sorts a C{Data} object in accordance with its time axis.
 
@@ -3549,7 +3543,7 @@ class GeoData(object):
         return np.all(np.diff(self.time) >= 0.)
 
 
-    def mask_region(self, r, return_object=False, method='full', maskfile=None, force=False):
+    def mask_region(self, r, return_object=True, method='full', maskfile=None, force=False):
         """
         Given a Region object, mask all the data which is outside of the region
 

@@ -463,9 +463,9 @@ class TestData(unittest.TestCase):
     def test_timn(self):
         A = self.D.copy()
         B = self.D.copy()
-        me = A.timmean()
-        su = B.timsum()
-        an = A.timn()  # ndarray
+        me = A.timmean(return_object=False)
+        su = B.timsum(return_object=False)
+        an = A.timn(return_object=False)  # ndarray
         bn = B.timn(return_object=True)  # Data object
         r = su/me
         self.assertEqual(r[0,0], an[0,0])
@@ -546,7 +546,7 @@ class TestData(unittest.TestCase):
         slope, intercept, r_value, p_value, std_err = stats.linregress(self.D.time,y)
 
         # calculate temporal correlation WITHOUT normalization of time
-        R, S, I, P = self.D.temporal_trend()  # no object is returned (default)
+        R, S, I, P = self.D.temporal_trend(return_object=False)  # no object is returned (default)
         self.assertEqual(R[0,0], r_value)
         self.assertEqual(S[0,0], slope)
 
@@ -922,8 +922,8 @@ class TestData(unittest.TestCase):
         y1 = y[s]
 
         # sort data
-        D.timsort()
-        R = D.timsort(return_object=True)
+        D.timsort(return_object=False)
+        R = D.timsort()
 
         # a) check if time is sorted
         self.assertTrue(np.all(np.diff(D.time) > 0))
@@ -2529,7 +2529,7 @@ class TestData(unittest.TestCase):
 
     def tests_get_center_pixel(self):
         D = self.D
-        y = D.get_center_data()
+        y = D.get_center_data(return_object=False)
         z = D.get_center_data(return_object=True)
         self.assertTrue(np.all(D.data[:, 0,0] - y == 0.))
         self.assertTrue(np.all(D.data[:, 0,0] - z.data[:, 0, 0] == 0.))
@@ -2543,28 +2543,28 @@ class TestData(unittest.TestCase):
 
         tmp = np.random.random((17, 23))  # 2D (odd all)
         D.data = np.ma.array(tmp, mask=tmp != tmp)
-        y = D.get_center_data()
+        y = D.get_center_data(return_object=False)
         z = D.get_center_data(return_object=True)
         self.assertEqual(D.data[8, 11], y)
         self.assertEqual(D.data[8, 11], z.data[0, 0])
 
         tmp = np.random.random((6, 8))  # 2D (equal all)
         D.data = np.ma.array(tmp, mask=tmp != tmp)
-        y = D.get_center_data()
+        y = D.get_center_data(return_object=False)
         z = D.get_center_data(return_object=True)
         self.assertEqual(D.data[2, 3], y)
         self.assertEqual(D.data[2, 3], z.data[0, 0])
 
         tmp = np.random.random((6, 23))  # 2D (equal only in Y)
         D.data = np.ma.array(tmp, mask=tmp != tmp)
-        y = D.get_center_data()
+        y = D.get_center_data(return_object=False)
         z = D.get_center_data(return_object=True)
         self.assertEqual(D.data[2, 11], y)
         self.assertEqual(D.data[2, 11], z.data[0, 0])
 
         tmp = np.random.random((100, 17, 23))  # 3D (odd all)
         D.data = np.ma.array(tmp, mask=tmp != tmp)
-        y = D.get_center_data()
+        y = D.get_center_data(return_object=False)
         z = D.get_center_data(return_object=True)
         self.assertTrue(np.all(D.data[:, 8,11]-y == 0.))
         self.assertTrue(np.all(D.data[:, 8,11]-z.data[:,0,0] == 0.))
