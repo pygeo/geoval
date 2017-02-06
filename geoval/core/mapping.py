@@ -627,7 +627,7 @@ class MapPlotGeneric(object):
         if self.zax is not None:
             self._set_axis_invisible(self.zax, frame=True)
 
-        self.im = self.pax.imshow(self.x.timmean(),
+        self.im = self.pax.imshow(self.x.timmean(return_object=False),
                                   interpolation='nearest', **kwargs)
 
     def _get_cticks(self):
@@ -765,8 +765,8 @@ class SingleMap(MapPlotGeneric):
         s = ''
         if self.show_statistic:
             if self.stat_type == 'mean':
-                me = tmp_xm.fldmean()
-                st = tmp_xm.fldstd()
+                me = tmp_xm.fldmean(return_data=False)
+                st = tmp_xm.fldstd(return_data=False)
                 assert(len(me) == 1)
                 assert(len(st) == 1)
                 me = me[0]
