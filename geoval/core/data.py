@@ -1784,6 +1784,8 @@ class GeoData(object):
         if not varname in File.get_variable_keys():
             self._log_warning(
                     'WARNING: data can not be read. Variable not existing! ', varname)
+            print 'VARNAME: ', varname
+            print 'EXISTING VARS: ', File.get_variable_keys()
             File.close()
             return None
 
@@ -2396,7 +2398,7 @@ class GeoData(object):
             pass
         else:
             raise ValueError('fldmean currently only supported for 2D/3D data')
-
+        
         if apply_weights:
             # area weighting
             # get weighting matrix for each timestep (taking care of invalid
@@ -2405,11 +2407,13 @@ class GeoData(object):
             # multiply the data with the weighting matrix in memory efficient
             # way
             w *= self.data
+            
             if self.data.ndim == 3:
                 w.shape = (len(self.data), -1)
                 tmp = w.sum(axis=1)  # ... gives weighted sum
             elif self.data.ndim == 2:
                 tmp = np.asarray([np.asarray(w.sum())])
+                tmp = np.ma.array(tmp, mask=tmp != tmp)
             else:
                 raise ValueError('Undefined!')
         else:
@@ -2430,7 +2434,7 @@ class GeoData(object):
                 x[:, :] = tmp[0]
             else:
                 raise ValueError('Undefined')
-            assert (isinstance(tmp, np.ma.masked_array))
+            assert (isinstance(tmp, np.ma.masked_array)), 'ERROR: wrong data type: ' + str(type(tmp))
             r = self.copy()
             r.data = np.ma.array(x.copy(),
                                  mask=tmp.mask)  # use mask of array tmp (important if all values are invalid!)
