@@ -10,10 +10,10 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 # https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
 
 from setuptools import setup
-from distutils.core import setup as setup_dist  # todo use only one setup
+# from distutils.core import setup as setup_dist  # todo use only one setup
 
 import os
-import glob
+# import glob
 
 # the setuptools are supposed to be used as a standard. Thats why we ommit
 # usage of distutils here
@@ -25,13 +25,13 @@ import glob
 # a small example how to build dependencies is given here:
 # http://stackoverflow.com/questions/11010151/distributing-a-shared-library-and-some-c-code-with-a-cython-extension-module
 
-import os
+# import os
 import numpy as np
 import json
 
-from setuptools import setup, Extension
+# from setuptools import setup #, Extension
 from setuptools import find_packages  # Always prefer setuptools over distutils
-from Cython.Distutils import build_ext
+# from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 
 
@@ -83,7 +83,7 @@ setup(name='geoval',
 
       url='https://github.com/pygeo/geoval',
 
-      long_description='xxxx',
+      long_description='Geoval is a basic package for geospatial data analysis in python',
 
       # List run-time dependencies here. These will be installed by pip when your
       # project is installed. For an analysis of "install_requires" vs pip's
@@ -143,6 +143,10 @@ setup(name='geoval',
 ########################################################################
 
 # PIP
-#~ python setup.py register
-#~ python setup.py sdist
-#~ python setup.py upload
+
+
+# 1) on a new computer you need to create a .pypirc file like described in the
+# pypi documentation
+# 2) install twine using pip install twine
+# 3) generate package using: python setup.py sdist
+# 4) just upload using twine upload dist/*
