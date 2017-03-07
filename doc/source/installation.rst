@@ -4,6 +4,8 @@ Installation
 Dependencies
 ------------
 
+This is a list of dependencies that would need to be covered in a conda package
+
 - cython
 - numpy
 - scipy
@@ -12,13 +14,11 @@ Dependencies
 - matplotlib
 - dateutil
 - basemap
-
-libgeos-dev
-libproj-dev
-libgdal
-
-
-
+- libgeos-dev
+- libproj-dev
+- libgdal
+- pyshp
+- cartopy and its dependencies !!!
 
 Installation options
 --------------------
