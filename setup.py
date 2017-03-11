@@ -6,6 +6,12 @@ This file is part of GEOVAL.
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
+# http://stackoverflow.com/questions/37742912/how-to-compile-pyx-using-cythonize-inside-setup-py
+# nstance python setup.py build_ext --inplace, or pip install -e . in th
+
+
+
+
 # good introduction into packing can be found in
 # https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
 
