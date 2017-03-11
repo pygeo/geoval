@@ -15,8 +15,8 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 # good introduction into packing can be found in
 # https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
 
-from setuptools import setup
-# from distutils.core import setup as setup_dist  # todo use only one setup
+# from setuptools import setup
+from distutils.core import setup # use distutils as this allows to build extensions in placee
 
 import os
 # import glob
