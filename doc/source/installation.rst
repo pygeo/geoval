@@ -4,7 +4,7 @@ Installation
 Dependencies
 ------------
 
-This is a list of dependencies that would need to be covered in a conda package
+This is a list of dependencies that would need to be installed before the installation of `geoval`. Note that the PIP based and conda based installation procedures described further below are supposed to take care of the dependencies automatically. This was however not yet thoroughly tested. 
 
 - cython
 - numpy
@@ -18,7 +18,7 @@ This is a list of dependencies that would need to be covered in a conda package
 - libproj-dev
 - libgdal
 - pyshp
-- cartopy and its dependencies !!!
+- cartopy 
 
 Installation options
 --------------------
@@ -30,7 +30,9 @@ Conda and PIP base installation is currently not implemented as the author had n
 conda based installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-TBD still needs to be implemented
+TODO conda installation not tested yet, but will work as follows::
+
+    conda install [-n YOURENV] -c conda-forge geoval
 
 pip based installation
 ~~~~~~~~~~~~~~~~~~~~~~~~

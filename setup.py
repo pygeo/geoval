@@ -44,8 +44,8 @@ from Cython.Build import cythonize
 
 # requires scipy:
 # http://stackoverflow.com/questions/11128070/cannot-import-minimize-in-scipy
-install_requires = ["numpy>0.1", "cdo>1.2", "netCDF4", "pytz",
-                    "matplotlib", 'shapely', 'cartopy', 'cython', 'scipy']
+# install_requires = ["numpy>0.1", "cdo>1.2", "netCDF4", "pytz",
+#                    "matplotlib", 'shapely', 'cartopy', 'cython', 'scipy']
 
 #~ ext_polygon_utils = Extension('polygon_utils',
                               #~ sources=['.' + os.sep + 'geoval' + os.sep + 'polygon' +
@@ -95,7 +95,7 @@ setup(name='geoval',
       # project is installed. For an analysis of "install_requires" vs pip's
       # requirements files see:
       # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-      install_requires=install_requires,
+      # install_requires=install_requires,
 
       keywords=["data", "science", "climate", "meteorology",
                 "model evaluation", "benchmarking", "metrics"],
@@ -124,7 +124,7 @@ setup(name='geoval',
           'Topic :: Scientific/Engineering :: Visualization',
 
           # Pick your license as you wish (should match "license" above)
-          'License :: OSI Approved :: MIT License',
+          'License :: OSI Approved :: Apache 2.0',
 
           # Specify the Python versions you support here. In particular, ensure
           # that you indicate whether you support Python 2, Python 3 or both.
