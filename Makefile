@@ -22,7 +22,6 @@ clean :
 	rm -rf MANIFEST
 	rm -rf cover
 	rm -rf tmp
-	rm -rf doc
 	rm -rf dist
 	rm -rf geoval.egg-info
 
