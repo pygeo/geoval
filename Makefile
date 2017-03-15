@@ -25,6 +25,8 @@ clean :
 	rm -rf dist
 	rm -rf geoval.egg-info
 
+dependencies:
+	python setup.py build_ext --inplace
 
 coverage: dependencies
 	#nosetests --with-coverage --cover-package=benchmarking --cover-package=pycmbs $(TESTDIRS) --cover-html
@@ -41,12 +43,6 @@ build_docs:
 
 #update_version:
 #	python autoincrement_version.py
-
-upload_docs:
-	python setup.py upload_sphinx
-
-dependencies : clean
-	sh compile_extensions.sh
 
 upload_pip: update_version
 	# ensure that pip version has always counterpart on github
