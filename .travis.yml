@@ -86,8 +86,8 @@ install:
 
 script:
  - source activate test-environment
- - python -c "import matplotlib.pyplot as plt"
- # - nosetests 
+ #- python -c "import matplotlib.pyplot as plt"
+ - nosetests 
 
 
 
