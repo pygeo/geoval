@@ -39,6 +39,10 @@ install:
     - conda install -n test-environment -c conda-forge matplotlib
     - conda install -q -n test-environment -c conda-forge scipy python-cdo basemap cartopy netcdf4 pyshp cython shapely
 
+    # install own version of nose, as otherwise the nosetest command will be exectuted in a different environment
+    # and modules are then not found
+    - conda install -n test-environment -c conda-forge nose
+
     # now install package
     - source activate test-environment
     - python setup.py build_ext --inplace
