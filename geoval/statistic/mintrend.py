@@ -1,7 +1,12 @@
+from __future__ import print_function
+
 import os
-import cPickle
+
+try:
+    import cPickle  # python 2
+except:
+    import pickle as cPickle  # python 3 (cPickle not existing any more)
 import numpy as np
-from scipy.interpolate import griddata
 from scipy.spatial import cKDTree
 
 from geoval.core import GeoData
@@ -43,11 +48,6 @@ class MintrendPlot(object):
         MEAN, PHIS, CVS  = np.meshgrid(d['means'],d['phis'],d['cvs'])
         msk = ~np.isnan(d['res'])
 
-        # now generate vector from all values that are not None
-        #~ print 'CVS: ', CVS.shape, len(d['cvs'])
-        #~ print 'means: ', len(d['means'])
-        #~ print 'phis: ', len(d['phis'])
-
         self.cvs = CVS[msk].flatten()
         self.means = MEAN[msk].flatten()
         self.phis = PHIS[msk].flatten()
@@ -77,9 +77,9 @@ class MintrendPlot(object):
 
 
 
-        print 'ncoords: ', coords.shape
-        print 'indx: ', ind.min(), ind.max(), ind.shape
-        print 'val: ', val.min(), val.max(), val.shape
+        print('ncoords: ', coords.shape)
+        print('indx: ', ind.min(), ind.max(), ind.shape)
+        print('val: ', val.min(), val.max(), val.shape)
 
         d1,d2 = dist.T
         v1,v2 = val[ind].T
@@ -173,7 +173,7 @@ class MintrendPlot(object):
 
         # coefficient of variation
         self._calc_cv(PHI, SLOPE, SIG_R, ME, var_t)
-        print self.CV.min, self.CV.max
+        print(self.CV.min, self.CV.max)
 
 
         # mask for valid pixels
@@ -184,7 +184,7 @@ class MintrendPlot(object):
         means = ME.data[msk].flatten()
         phis = PHI.data[msk].flatten()
 
-        print 'NPixels: ', len(means)
+        print('NPixels: ', len(means))
 
         if hasattr(self, 'X'):
             if force:
