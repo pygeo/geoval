@@ -8,14 +8,12 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 import sys
 sys.path.append('..')
 
-from unittest import TestCase
 import unittest
 
 from geoval.core import GeoData
 from geoval.region import RegionPolygon
 
 import os
-import scipy as sc
 import matplotlib.pylab as pl
 import numpy as np
 from scipy import stats
@@ -25,9 +23,6 @@ import datetime
 
 import tempfile
 
-from nose.tools import assert_raises
-
-import matplotlib.pyplot as plt
 
 class TestData(unittest.TestCase):
 
@@ -43,7 +38,7 @@ class TestData(unittest.TestCase):
         if os.path.exists(logfile):
             os.remove(logfile)
         x._log_warning('testlog', write_log=True)
-        print logfile
+        print(logfile)
         self.assertTrue(os.path.exists(logfile))
 
     def test_log_warning_WithEnvironmentVariable(self):
@@ -1334,7 +1329,7 @@ class TestData(unittest.TestCase):
         D.lon=np.arange(10).astype('float')
         r = D._get_unique_lon()
 
-        print r - D.lon
+        print(r - D.lon)
         self.assertTrue(np.all( r - D.lon == 0.))
 
     def test__get_unique_lon(self):
@@ -1542,7 +1537,7 @@ class TestData(unittest.TestCase):
         D._init_sample_object(nt=100, ny=3, nx=1)
         #~ D.cell_area = np.ones((3,1))
         D.cell_area[0,0] = 2.
-        print D.cell_area
+        print(D.cell_area)
         D.cell_area[0,1] = 1.
         D.cell_area[0,1] = 3.
         msk = np.asarray([[1,2,3],]).T  # sample mask
@@ -2694,7 +2689,7 @@ class TestData(unittest.TestCase):
 
         mlen = x._get_days_per_month()
         for i in xrange(len(mlen)):
-            print i, len(mlen), len(dref)
+            print(i, len(mlen), len(dref))
             self.assertEqual(mlen[i], dref[i])
 
     def test_mul_tvec(self):

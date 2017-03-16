@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 """
 This file is part of GEOVAL.
 (c) 2016- Alexander Loew
@@ -79,10 +80,10 @@ class RegionGeneric(object):
 
     def _check_bbox_validity(self, x1, x2, y1, y2):
         if x2 < x1:
-            print x1, x2
+            print(x1, x2)
             raise ValueError('Invalid X boundaries for region')
         if y2 < y1:
-            print y1, y2
+            print(y1, y2)
             raise ValueError('Invalid Y boundaries for region')
 
     def _get_label(self):
@@ -281,8 +282,8 @@ class RegionParser(object):
                 continue
             d = l.split(',')
             if len(d) != 6:
-                print l
-                print d
+                print(l)
+                print(d)
                 raise ValueError('ERROR: some invalid format the line above!')
             self.regions.update({d[0]: RegionBboxLatLon(
                 int(d[1]), float(d[2]), float(d[3]), float(d[4]), float(d[5]), label=d[0])})
@@ -325,7 +326,7 @@ class RegionParser(object):
                     elif name.upper() == 'ID':
                         tmp_id = int(value)
                     else:
-                        print section, name
+                        print(section, name)
                         raise ValueError('Unsupported attribute!')
 
                 if tmp_lon is None:
