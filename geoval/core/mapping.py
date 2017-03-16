@@ -6,6 +6,8 @@ This file is part of GEOVAL  and edited for use with ESMValTool
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
+import matplotlib
+matplotlib.use('Agg')
 
 """
 This module implements generic map plotting capabilities
