@@ -14,32 +14,61 @@ virtualenv:
 system_site_packages: true
 
 
-before_install:
+# from https://conda.io/docs/travis.html
+install:
+    - sudo apt-get update 
 
-- sudo apt-get update
+    # install conda
+    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+        wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+      else
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+      fi
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    # Useful for debugging any issues with conda
+    - conda info -a
+
+    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+
+    # now install package specific dependencies
+    - conda install -q -n test-environment -c conda-forge scipy matplotlib python-cdo basemap cartopy netcdf4 pyshp cython
+
+    # now install package
+    - source activate test-environment
+    - python setup.py build_ext --inplace
+    - python setup.py install
+
+
+
+#before_install:
+
 
 # general setup
-- sudo apt-get install python-pip python-dev
+#- sudo apt-get install python-pip python-dev
 
 # basic python modules
-- sudo apt-get install python-numpy
-- sudo apt-get install python-scipy
+#- sudo apt-get install python-numpy
+  #- sudo apt-get install python-scipy
 # todo clarify alternative installation for SCIPY to allow for most recent version ??
 #- pip install pyparsing
-- pip install matplotlib
-- sudo apt-get install python-mpltoolkits.basemap python-mpltoolkits.basemap-data
+#- pip install matplotlib
+#- sudo apt-get install python-mpltoolkits.basemap python-mpltoolkits.basemap-data
 
 # projection libraries
-- sudo apt-get install libgeos-dev libproj-dev
+#- sudo apt-get install libgeos-dev libproj-dev
 
 # testing environment
-- pip install coveralls pytest-cov
+# - pip install coveralls pytest-cov
 
 # I/O related things
-- sudo apt-get install cdo
-- sudo apt-get install libhdf5-openmpi-dev libnetcdf-dev libopenmpi-dev
-- sudo apt-get install libgdal1h
-- sudo apt-get install libgdal-dev
+# - sudo apt-get install cdo
+# - sudo apt-get install libhdf5-openmpi-dev libnetcdf-dev libopenmpi-dev
+# - sudo apt-get install libgdal1h
+# - sudo apt-get install libgdal-dev
 
 # netCDF4 installation
 
@@ -50,25 +79,25 @@ before_install:
 #cp setup.cfg.template setup.cfg
 #popd
 
-- sudo pip install netCDF4
+      #- sudo pip install netCDF4
 
 # cartopy dependencices
-- sudo pip install shapely
-- sudo pip install pyshp
-- sudo pip install six
-- sudo pip install cython
-- sudo pip install cartopy
+# - sudo pip install shapely
+# - sudo pip install pyshp
+# - sudo pip install six
+# - sudo pip install cython
+# - sudo pip install cartopy
 
 # do actual installation
-- sudo /usr/bin/python setup.py build_ext --inplace install
+# - sudo /usr/bin/python setup.py build_ext --inplace install
 #####- sudo /usr/bin/python setup.py build_ext  does not work yet!
 # - sudo sh compile_extensions.sh
 
 script:
-- nosetests 
+ - nosetests 
 
-after_success:
-- coveralls
+# after_success:
+# - coveralls
 
 
 
