@@ -24,18 +24,20 @@ install:
       else
         wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
       fi
+
     - bash miniconda.sh -b -p $HOME/miniconda
     - export PATH="$HOME/miniconda/bin:$PATH"
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
+      
     # Useful for debugging any issues with conda
     - conda info -a
-
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
 
     # now install package specific dependencies
-    - conda install -q -n test-environment -c conda-forge scipy matplotlib python-cdo basemap cartopy netcdf4 pyshp cython
+    - conda install -n test-environment -c conda-forge matplotlib
+    - conda install -q -n test-environment -c conda-forge scipy python-cdo basemap cartopy netcdf4 pyshp cython shapely
 
     # now install package
     - source activate test-environment
@@ -46,9 +48,6 @@ install:
 
 #before_install:
 
-
-# general setup
-#- sudo apt-get install python-pip python-dev
 
 # basic python modules
 #- sudo apt-get install python-numpy
@@ -65,28 +64,15 @@ install:
 # - pip install coveralls pytest-cov
 
 # I/O related things
-# - sudo apt-get install cdo
 # - sudo apt-get install libhdf5-openmpi-dev libnetcdf-dev libopenmpi-dev
 # - sudo apt-get install libgdal1h
 # - sudo apt-get install libgdal-dev
 
-# netCDF4 installation
 
-#- sudo C_INCLUDE_PATH=/usr/include/mpi pip install netCDF4==1.1.1
-# todo: remove particular dependency on entCDF4 version here again!!!
-#git clone https://github.com/Unidata/netcdf4-python.git
-#pushd netcdf4-python
-#cp setup.cfg.template setup.cfg
-#popd
-
-      #- sudo pip install netCDF4
 
 # cartopy dependencices
-# - sudo pip install shapely
 # - sudo pip install pyshp
 # - sudo pip install six
-# - sudo pip install cython
-# - sudo pip install cartopy
 
 # do actual installation
 # - sudo /usr/bin/python setup.py build_ext --inplace install
@@ -96,8 +82,6 @@ install:
 script:
  - nosetests 
 
-# after_success:
-# - coveralls
 
 
 
