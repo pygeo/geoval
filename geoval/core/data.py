@@ -428,9 +428,9 @@ class GeoData(object):
         if (self.nx % 2) == 0:
             jpos = (self.nx - 1) / 2
         else:
-            jpos = (self.nx - 1) / 2
+            jpos = (self.nx - 1) / 2  # note that in python3 this is a decimal!
 
-        return ipos, jpos
+        return int(ipos), int(jpos)
 
 
 
@@ -3589,7 +3589,7 @@ class GeoData(object):
         # perform rasterization
         if f_rasterize:
             polylist = []
-            polylist.append(geovalPolygon(r.id, zip(r.lon, r.lat)))
+            polylist.append(geovalPolygon(r.id, list(zip(r.lon, r.lat))))
 
             print('   ... rasterizing')
             M = Raster(self.lon, self.lat)

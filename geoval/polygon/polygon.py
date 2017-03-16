@@ -70,10 +70,10 @@ def _rasterize_polygon(lon, lat, i, method):
     elif method == 'fullold':
         assert False
         ny, nx = lon.shape
-        for i in xrange(ny):
+        for i in range(ny):
             #~ if i % 1 == 0:
             print('Rasterization complete by ', np.round(100. * float(i) / float(ny), 0), '%               \r',)
-            for j in xrange(nx):
+            for j in range(nx):
                 if P.point_in_poly(lon[i, j], lat[i, j]):
                     if np.isnan(mask[i, j]):
                         mask[i, j] = id
@@ -102,7 +102,7 @@ def _rasterize_polygon(lon, lat, i, method):
         plat = lat[valid_points]
 
         resmsk = np.zeros_like(plon) * np.nan
-        for i in xrange(len(plon)):
+        for i in range(len(plon)):
             #~ if i % 500 == 0:
                 #~ print i, len(plon)
             if P.point_in_poly(plon[i], plat[i]):
@@ -181,7 +181,7 @@ class Raster(object):
 
         if nproc == 1:
             #~ for P in polygons:
-            for i in xrange(len(polygons)):
+            for i in range(len(polygons)):
                 self._rasterize_single_polygon(i, method=method)
         else:
             assert False, 'Parallelization does not work properly here yet'
@@ -192,7 +192,7 @@ class Raster(object):
             N = len(polygons)
             pool = multiprocessing.Pool(processes=nproc)
             the_args = itertools.izip(itertools.repeat(self.lon, N), itertools.repeat(
-                self.lat, N), xrange(len(polygons)), itertools.repeat(method, N))
+                self.lat, N), range(len(polygons)), itertools.repeat(method, N))
             r = pool.map(argument_mapper_rasterize, the_args)
             pool.close()
 
