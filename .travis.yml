@@ -1,30 +1,20 @@
 language: python
-python: 2.7
-virtualenv:
-  system_site_packages: true
+python:
+ - "2.7"
+ - "3.4"
+ - "3.5"
+ - "3.6"
 
-branches:
-    only:
-        - master
+virtualenv:
+system_site_packages: true
+
 
 before_install:
-
-# todo
-# do we really need the sudo commands ???
 
 - sudo apt-get update
 
 # general setup
 - sudo apt-get install python-pip python-dev
-
-
-# now install package with pip and the uninstall it again
-#- sudo pip install geoval
-
-
-
-# latex environment
-#- sudo apt-get install texlive-latex-base texlive-latex-extra texlive-latex-recommended
 
 # basic python modules
 - sudo apt-get install python-numpy
@@ -70,7 +60,7 @@ before_install:
 # - sudo sh compile_extensions.sh
 
 script:
-- nosetests --with-coverage --cover-package=geoval
+- nosetests 
 
 after_success:
 - coveralls
