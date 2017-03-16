@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 """
 This file is part of GEOVAL.
 (c) 2012- Alexander Loew
@@ -6,8 +7,8 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
 import numpy as np
-from polygon_utils import Polygon
-from polygon_utils import get_point_in_poly_mask
+from .polygon_utils import Polygon
+from .polygon_utils import get_point_in_poly_mask
 
 import multiprocessing
 import itertools
@@ -40,7 +41,7 @@ def _rasterize_polygon(lon, lat, i, method):
     # check if data across the dateline. This is currently not supported yet!
     if method != 'full':
         if P.across_dateline():  # check routine not existing yet!
-            print 'WARNING: seems that polygon is across the dateline. This is currently not supported yet! SKIPPING polygon with ID: ', P.id
+            print('WARNING: seems that polygon is across the dateline. This is currently not supported yet! SKIPPING polygon with ID: ', P.id)
             return
 
     id = float(P.id)
@@ -71,13 +72,13 @@ def _rasterize_polygon(lon, lat, i, method):
         ny, nx = lon.shape
         for i in xrange(ny):
             #~ if i % 1 == 0:
-            print 'Rasterization complete by ', np.round(100. * float(i) / float(ny), 0), '%               \r',
+            print('Rasterization complete by ', np.round(100. * float(i) / float(ny), 0), '%               \r',)
             for j in xrange(nx):
                 if P.point_in_poly(lon[i, j], lat[i, j]):
                     if np.isnan(mask[i, j]):
                         mask[i, j] = id
                     else:
-                        print i, j, lon[i, j], lat[i, j]
+                        print(i, j, lon[i, j], lat[i, j])
                         raise ValueError(
                             'Overlapping polygons not supported yet!')
                 else:
@@ -87,7 +88,7 @@ def _rasterize_polygon(lon, lat, i, method):
     # than 'full'
     elif method == 'faster':
         assert False, 'Option currently not supported!'
-        print 'Using CYTHON method for rasterization!'
+        print('Using CYTHON method for rasterization!')
         mask = fast_point_in_poly(lon, lat, P)
     elif method == 'fast':
         assert False
@@ -114,8 +115,8 @@ def _rasterize_polygon(lon, lat, i, method):
         newmsk[valid_points] = resmsk
         newvalues = ~np.isnan(newmsk)
         if np.any(~np.isnan(mask[newvalues])):
-            print newmsk[newvalues]
-            print sum(~np.isnan(mask[newvalues]))
+            print(newmsk[newvalues])
+            print(sum(~np.isnan(mask[newvalues])))
             raise ValueError('Some values had been set already before!')
         mask[newvalues] = newmsk[newvalues]
 
