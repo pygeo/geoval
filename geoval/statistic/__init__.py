@@ -5,6 +5,6 @@ This file is part of pyCMBS.
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
-from statistic_basic import *
-from lomb_scargle import *
+from .statistic_basic import *
+from .lomb_scargle import *
 

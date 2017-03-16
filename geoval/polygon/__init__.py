@@ -1,1 +1,1 @@
-from polygon import *
+from .polygon import *
