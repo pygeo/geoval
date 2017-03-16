@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 """
 This file is part of GEOVAL  and edited for use with ESMValTool
 (c) 2016- Alexander Loew
@@ -39,7 +40,7 @@ except:
 
 import matplotlib as mpl
 import numpy as np
-from data import GeoData
+from .data import GeoData
 
 
 class MapPlotGeneric(object):
@@ -200,7 +201,7 @@ class MapPlotGeneric(object):
         if self.stat_type not in ['mean', 'median', 'sum']:
             raise ValueError('Invalid statistic type: %s' % self.stat_type)
         if self.backend not in installed_backends:
-            print installed_backends
+            print(installed_backends)
             raise ValueError('Invalid plotting backend: %s' % self.backend)
         if self.backend == 'basemap':
             if 'cartopy' in installed_backends:
@@ -313,7 +314,7 @@ class MapPlotGeneric(object):
             lat = self.x.lat
 
             if np.prod(lon.shape) == 0:  # no geometry
-                print 'ERROR: invalid shape for plotting!'
+                print('ERROR: invalid shape for plotting!')
                 return
 
         if proj_prop['projection'] == 'robin':
@@ -366,7 +367,7 @@ class MapPlotGeneric(object):
                     # explicitely! this results in strange results for the
                     # final maps!
                 except:
-                    print 'ERROR in set_extent. This is a known problem for cartopy geoaxes (see documentation in set_extent routine). Can not be fixed here.'
+                    print('ERROR in set_extent. This is a known problem for cartopy geoaxes (see documentation in set_extent routine). Can not be fixed here.')
                     # try workaround
                     try:
                         # problem might be fixed by explicitely setting CRS
@@ -375,7 +376,7 @@ class MapPlotGeneric(object):
                         # CAUTION This can result however in weird plots!!!
                         # Caused problems in the past!
                     except:
-                        print 'Workaround did also not work, try to continue without setting extent!'
+                        print('Workaround did also not work, try to continue without setting extent!')
         else:
             self.pax.set_global()  # ensure global plot
         self.pax.coastlines()
@@ -385,7 +386,7 @@ class MapPlotGeneric(object):
                 self.im = self.pax.pcolormesh(
                     lon, lat, Z, transform=ccrs.PlateCarree(), **kwargs)
             except:
-                print '*** WARNING: something did not work with pcolormesh plotting in mapping.py'
+                print('*** WARNING: something did not work with pcolormesh plotting in mapping.py')
                 self.im = None
         else:
             self.im = None

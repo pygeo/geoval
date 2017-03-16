@@ -4,17 +4,15 @@ This file is part of GEOVAL.
 (c) 2012- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
+import sys
+sys.path.append('..')
 
-from unittest import TestCase
 import unittest
 
 from geoval.core import GeoData
 from geoval.core.mapping import SingleMap
 
 import tempfile
-
-from nose.tools import assert_raises
-
 
 class TestData(unittest.TestCase):
 
