@@ -1400,7 +1400,8 @@ class GeoData(object):
         # problem is that due to the gregorian/julian calendar, 10 days are missing
         # that results in a 28 minute shift each day! This is not fixed yet!
 
-        years = np.asarray(map(int, self.time)).astype('float')
+        #years = np.asarray(map(int, self.time)).astype('float')
+        years = np.asarray([int(t) for t in self.time]).astype('float')
         frac = self.time - years
         isleap = np.asarray(map(calendar.isleap, years))
         ndays = np.ones_like(years)*365.
