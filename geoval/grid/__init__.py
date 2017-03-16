@@ -1,1 +1,1 @@
-from grid import *
+from .grid import *
