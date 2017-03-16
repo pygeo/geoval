@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 """
 This file is part of GEOVAL  and edited for use with ESMValTool
 (c) 2016- Alexander Loew
@@ -16,11 +17,12 @@ EDITS:
 2016-03-31:     - rechanged .content to .data due to geoval
 """
 
+
 import os
 import sys
 
 # from statistic import get_significance, ttest_ind
-from netcdf import NetCDFHandler
+from .netcdf import NetCDFHandler
 # from polygon import Raster
 
 # commented due to RT Errors
@@ -148,12 +150,12 @@ class GeoData(object):
             if os.path.exists('dump.pkl'):
                 os.remove('dump.pkl')
             pickle.dump(self, open('dump.pkl', 'w'))
-            print 'An error occured in Data.date! Printing data for bugfixing'
+            print('An error occured in Data.date! Printing data for bugfixing')
             for i in range(len(self.time)):
                 x = self.num2date(self.time[i])
-                print self.time[i], x, datetime.datetime(
+                print(self.time[i], x, datetime.datetime(
                     x.year, x.month, x.day, x.hour, x.minute, x.second, 0,
-                    pytz.UTC)
+                    pytz.UTC))
             raise ValueError(
                 'Some error in time conversion happened! Look in dump.pkl to fix it')
     date = property(_get_date)
@@ -344,7 +346,6 @@ class GeoData(object):
         if self.time_str is None:
             raise ValueError('date2num can not work without timestr!')
         else:
-            #print self.calendar
             return self._netcdftime_date2num(t, self.time_str,
                                              calendar=self.calendar) - offset
 
@@ -542,11 +543,11 @@ class GeoData(object):
                 if (self.shape[1] == 1) and (self.shape[2] == 1):
                     pass
                 else:
-                    print self.shape
+                    print(self.shape)
                     raise ValueError(
                         'HP filter currently only implemented for 1D data! (A)')
             else:
-                print self.shape
+                print(self.shape)
                 raise ValueError(
                     'HP filter currently only implemented for 1D data! (B)')
 
@@ -724,17 +725,17 @@ class GeoData(object):
 
         if base == 'month':
             if not x._is_monthly():
-                print x.date
+                print(x.date)
                 raise ValueError('Dataset X is not monthly data!')
             if not y._is_monthly():
-                print y.date
+                print(y.date)
                 raise ValueError('Dataset Y is not monthly data!')
         elif base == 'day':
             if not x._is_daily():
-                print x.date
+                print( x.date)
                 raise ValueError('Dataset X is not daily data!')
             if not y._is_daily():
-                print y.date
+                print(y.date)
                 raise ValueError('Dataset Y is not daily data!')
         else:
             raise ValueError('Unsupported base for alignment!')
@@ -917,7 +918,7 @@ class GeoData(object):
                 self.std = np.ma.array(
                     self.std.data, mask=np.isnan(self.std.data))
         else:
-            print np.shape(self.data)
+            print(np.shape(self.data))
             raise ValueError('Unsupported geometry _apply_mask')
 
         if hasattr(self, '_climatology_raw'):
@@ -1042,13 +1043,13 @@ class GeoData(object):
                              input=self.filename)
             except:
                 # occurs if you dont have write permissions
-                print '   Seems that cell_area file can not be generated, try to generate in temporary directory'
+                print('   Seems that cell_area file can not be generated, try to generate in temporary directory')
                 # generate some temporary filename
                 cell_file = tempfile.mktemp(prefix='cell_area_', suffix='.nc')
                 try:
                     cdo.gridarea(options='-f nc', output=cell_file,
                                  input=self.filename)
-                    print '   Cell area file generated sucessfully in temporary file: ' + cell_file
+                    print('   Cell area file generated sucessfully in temporary file: ' + cell_file)
                 except:
                     # not sucessfull so far ... last try here by selecting an
                     # alternative grid (if available)
@@ -1060,7 +1061,7 @@ class GeoData(object):
                     try:
                         cdo.gridarea(options='-f nc', output=cell_file,
                                      input='-selgrid,2 ' + self.filename)
-                        print '   Cell area file generated sucessfully in temporary file: ' + cell_file
+                        print('   Cell area file generated sucessfully in temporary file: ' + cell_file)
                     except:
                         try:
                             # store lat/lon coordinates in nc3 file and then
@@ -1116,7 +1117,7 @@ class GeoData(object):
             elif self.data.ndim == 3:
                 self.cell_area = np.ones(self.data[0, :, :].shape)
             else:
-                print 'actual geometry:  ', self.data.ndim, self.data.shape
+                print('actual geometry:  ', self.data.ndim, self.data.shape)
                 raise ValueError('Invalid geometry!')
 
 
@@ -1253,7 +1254,7 @@ class GeoData(object):
         try:
             self._mesh_lat_lon()
         except:
-            print '        WARNING: No lat/lon mesh was generated!'
+            print('        WARNING: No lat/lon mesh was generated!')
 
         #  check if latitude in decreasing order (N ... S)?
         if checklat:
@@ -1267,7 +1268,7 @@ class GeoData(object):
                     elif np.all(np.diff(self.lat[:, 0]) < 0.):
                         self._latitudecheckok = True
                     else:
-                        print 'WARNING: latitudes not in systematic order! Might cause trouble with zonal statistics!'
+                        print('WARNING: latitudes not in systematic order! Might cause trouble with zonal statistics!')
                         self._latitudecheckok = False
 
         # check if cell_area is already existing. if not,
@@ -1503,8 +1504,8 @@ class GeoData(object):
         if self.lon is not None:
             if self.lon.ndim > 1:
                 if self.lon.shape != self.lat.shape:
-                    print 'ERROR: geometries of lat/lon fields dont match'
-                    print self.lon.shape, self.lat.shape
+                    print('ERROR: geometries of lat/lon fields dont match')
+                    print(self.lon.shape, self.lat.shape)
                     assert False
                 if self.nx != self.lon.shape[1]:
                     raise ValueError(
@@ -1565,7 +1566,7 @@ class GeoData(object):
             r = np.ma.array(r, mask=W == 0.)
 
         else:
-            print dat.shape
+            print(dat.shape)
             raise ValueError('Unsupported geometry')
 
         if return_object:
@@ -1729,8 +1730,8 @@ class GeoData(object):
         if self.time[m2] > s2:
             m2 -= 1
         if m2 < m1:
-            print self.time
-            print self.date
+            print(self.time)
+            print(self.date)
             raise ValueError('Something went wrong _get_time_indices')
         return m1, m2
 
@@ -1784,10 +1785,11 @@ class GeoData(object):
         if not varname in File.get_variable_keys():
             self._log_warning(
                     'WARNING: data can not be read. Variable not existing! ', varname)
-            print 'VARNAME: ', varname
-            print 'EXISTING VARS: ', File.get_variable_keys()
+            print('VARNAME: ', varname)
+            print('EXISTING VARS: ', File.get_variable_keys())
             File.close()
             return None
+            #print self.calendar
 
         try:
             data = File.get_variable(varname)
@@ -1798,7 +1800,7 @@ class GeoData(object):
 
         if data.ndim > 3:
             if self.level is None:
-                print data.shape
+                print(data.shape)
                 raise ValueError(
                     '4-dimensional variables not supported yet! Either remove a dimension or specify a level!')
             else:
@@ -1862,7 +1864,7 @@ class GeoData(object):
                 if self.calendar == 'climatology_bounds':
                     self.calendar = 'standard'
             else:
-                print 'WARNING: no calendar specified!'
+                print('WARNING: no calendar specified!')
                 self.calendar = 'standard'
         else:
             self.time = None
@@ -1922,7 +1924,7 @@ class GeoData(object):
         elif self.data.ndim == 2:
             res = self.data.copy()  # no temporal averaging
         else:
-            print self.data.ndim
+            print(self.data.ndim)
             raise ValueError(
                 'Temporal mean can not be calculated as dimensions do not match!')
 
@@ -2066,7 +2068,7 @@ class GeoData(object):
             # no temporal averaging
             res = self.data.copy()
         else:
-            print self.data.ndim
+            print(self.data.ndim)
             raise ValueError(
                 'Temporal minimum can not be calculated as dimensions do not match!')
 
@@ -2094,7 +2096,7 @@ class GeoData(object):
             # no temporal averaging
             res = self.data.copy()
         else:
-            print self.data.ndim
+            print(self.data.ndim)
             raise ValueError(
                 'Temporal maximum can not be calculated as dimensions do not match!')
 
@@ -2344,9 +2346,9 @@ class GeoData(object):
             elif len(s) == 1:
                 w = cell_area.repeat(nt).reshape((1, nt)).T
             else:
-                print 'nt: ', nt
-                print 's: ', s
-                print 'len(s): ', len(s)
+                print('nt: ', nt)
+                print('s: ', s)
+                print('len(s): ', len(s))
                 raise ValueError('Invalid geometry!')
 
             w.shape = self.data.shape  # geometry is the same now as data
@@ -2508,8 +2510,8 @@ class GeoData(object):
                 elif ddof == 1:  # biased estimator
                     V1 = w.sum()
                     V2 = (w * w).sum()
-                    print 'V1, V2: ', V1, V2
-                    print 'mu: ', mu
+                    print('V1, V2: ', V1, V2)
+                    print('mu: ', mu)
                     s = V1 * np.sum(w * (self.data - mu) ** 2.) / \
                         (V1 * V1 - V2)
                     tmp = [np.sqrt(s)]
@@ -2565,8 +2567,8 @@ class GeoData(object):
                 raise ValueError('Undefined')
 
             if not (isinstance(tmp, np.ma.masked_array)):
-                print type(tmp)
-                print self.data.ndim
+                print(type(tmp))
+                print(self.data.ndim)
                 raise ValueError('Invalid data type!')
 
             r = self.copy()
@@ -3026,11 +3028,11 @@ class GeoData(object):
             try:
                 # copy (needed for arrays)
                 cmd = "d." + attr + " = self." + attr + '.copy()'
-                exec cmd
+                exec(cmd)
             except:
                 # copy
                 cmd = "d." + attr + " = self." + attr
-                exec cmd
+                exec(cmd)
         return d
 
     def copy(self):
@@ -3198,10 +3200,6 @@ class GeoData(object):
         return d
 
 
-
-
-#-----------------------------------------------------------------------
-
     def div(self, x, copy=True):
         """
         Divide current object field by field of a C{Data} object
@@ -3225,18 +3223,18 @@ class GeoData(object):
                         # second and third dimension match
                         pass
                     else:
-                        print np.shape(self.data)
-                        print np.shape(x.data)
+                        print(np.shape(self.data))
+                        print(np.shape(x.data))
                         raise ValueError(
                             'Inconsistent geometry (div): can not calculate!')
                 else:
-                    print np.shape(self.data)
-                    print np.shape(x.data)
+                    print(np.shape(self.data))
+                    print(np.shape(x.data))
                     raise ValueError(
                         'Inconsistent geometry (div): can not calculate!')
             else:
-                print np.shape(self.data)
-                print np.shape(x.data)
+                print(np.shape(self.data))
+                print(np.shape(x.data))
                 raise ValueError(
                     'Inconsistent geometry (div): can not calculate!')
 
@@ -3280,18 +3278,18 @@ class GeoData(object):
                         # second and third dimension match
                         pass
                     else:
-                        print np.shape(self.data)
-                        print np.shape(x.data)
+                        print(np.shape(self.data))
+                        print(np.shape(x.data))
                         raise ValueError(
                             'Inconsistent geometry (div): can not calculate!')
                 else:
-                    print np.shape(self.data)
-                    print np.shape(x.data)
+                    print(np.shape(self.data))
+                    print(np.shape(x.data))
                     raise ValueError(
                         'Inconsistent geometry (div): can not calculate!')
             else:
-                print np.shape(self.data)
-                print np.shape(x.data)
+                print(np.shape(self.data))
+                print(np.shape(x.data))
                 raise ValueError(
                     'Inconsistent geometry (div): can not calculate!')
 
@@ -3378,7 +3376,7 @@ class GeoData(object):
         I.shape = (-1)
         CO.shape = (-1)
 
-        print 'Calculating correlation ...'
+        print('Calculating correlation ...')
         if method == 'pearson':
             res = [stats.mstats.linregress(x, dat[:, i]) for i in xrange(n)]
             #~ res = np.ones(n)*np.nan
@@ -3573,11 +3571,11 @@ class GeoData(object):
             force always calculation of mask based on polygon information
         """
 
-        print 'Masking by region ...'
+        print('Masking by region ...')
 
         if maskfile is not None:
             if maskfile[-3:] != '.nc':
-                print maskfile
+                print(maskfile)
                 raise ValueError('Maskfile needs to eb a netcdf file!')
             if os.path.exists(maskfile):
                 f_rasterize = False
@@ -3594,7 +3592,7 @@ class GeoData(object):
             polylist = []
             polylist.append(geovalPolygon(r.id, zip(r.lon, r.lat)))
 
-            print '   ... rasterizing'
+            print('   ... rasterizing')
             M = Raster(self.lon, self.lat)
             M.rasterize_polygons(polylist, method=method)
             themask = M.mask
@@ -3687,14 +3685,14 @@ class GeoData(object):
 
         # A) all data is BEFORE desired period
         if self.date.max() < d.min():
-            print self.date.max(), d.min()
+            print(self.date.max(), d.min())
             print(
                 'WARNING: specified time period is BEFORE any data availability. NO INTERPOLATION CAN BE DONE!')
             f_err = True
 
         # B) all data is AFTER desired period
         if self.date.min() > d.max():
-            print self.date.min(), d.max()
+            print(self.date.min(), d.max())
             print(
                 'WARNING: specified time period is AFTER any data availability. NO INTERPOLATION CAN BE DONE!')
             f_err = True
@@ -3743,8 +3741,8 @@ class GeoData(object):
                 continue
 
             if self.date[i2] < d[i]:
-                print self.date[i1], d[i], self.date[i2]
-                print i1, i, i2
+                print(self.date[i1], d[i], self.date[i2])
+                print(i1, i, i2)
                 raise ValueError('interp_time: this should not happen!')
 
             if i2 > nt0 - 1:
@@ -3848,7 +3846,7 @@ class GeoData(object):
         if x.ndim != 1:
             raise ValueError('Only 1D arrays allowed')
         if len(x) != self.nt:
-            print len(x), self.nt
+            print(len(x), self.nt)
             raise ValueError('Inconsistent geometries for temporal vector!')
 
         if copy:
@@ -3937,7 +3935,7 @@ class GeoData(object):
             if self._equal_lon():  # ... check for unique lons
                 return self.lon[0, :]
             else:
-                print self.filename
+                print(self.filename)
                 raise ValueError(
                     'The dataset does not contain unique LONGITUDES!')
         else:
@@ -4071,13 +4069,13 @@ class GeoData(object):
 
         if self.data.ndim == 2:
             if self.data.shape != m.shape:
-                print self.shape
-                print m.shape
+                print(self.shape)
+                print(m.shape)
                 raise ValueError('Invalid geometry!')
         elif self.data.ndim == 3:
             if self.data[0, :, :].shape != m.shape:
-                print self.shape
-                print m.shape
+                print(self.shape)
+                print(m.shape)
                 raise ValueError('Invalid geometry!')
         else:
             raise ValueError('Unsupported Data geometry!')
@@ -4268,7 +4266,7 @@ class GeoData(object):
             raise ValueError('temporal masking only possible for 3D data')
 
         if len(mask) != len(self.data):
-            print len(mask), self.data.shape
+            print(len(mask), self.data.shape)
             raise ValueError('Inconsistent length of data and mask')
 
         for i in xrange(len(mask)):
@@ -4363,7 +4361,7 @@ class GeoData(object):
         """
 
         if not Y.data.shape == self.data.shape:
-            print Y.data.shape, self.data.shape
+            print(Y.data.shape, self.data.shape)
             raise ValueError('unequal shapes: correlation not possible!')
 
         # generate a mask of all samples that are valid in BOTH datasets
@@ -4535,8 +4533,8 @@ class GeoData(object):
         r.adjust_time(year=1200)  # set some arbitrary time
 
         if len(r.time) != len(r.data):
-            print len(r.time)
-            print len(r.data)
+            print(len(r.time))
+            print(len(r.data))
             raise ValueError(
                 'Data and time are inconsistent in get_climatology()')
 
@@ -4822,7 +4820,7 @@ class GeoData(object):
         convert monthly timeseries to a daily timeseries
         """
         if self.calendar not in ['standard', 'gregorian', None]:
-            print self.calendar
+            print(self.calendar)
             raise ValueError('Not sure if monthly timeseries conversion \
                                 works with this calendar!')
 

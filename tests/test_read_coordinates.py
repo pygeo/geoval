@@ -6,18 +6,17 @@ This file is part of GEOVAL.
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
-
-from unittest import TestCase
+import sys
+sys.path.append('..')
 import unittest
 
 from geoval.core.data import GeoData
 from geoval.core.netcdf import NetCDFHandler
 
-import os
 import numpy as np
 import tempfile
 
-from nose.tools import assert_raises
+# from nose.tools import assert_raises
 
 class TestData(unittest.TestCase):
 
@@ -71,8 +70,8 @@ class TestData(unittest.TestCase):
 
         # read data with separate geometry file 'lat', 'lon' names
         x2 = GeoData(self.tempfile, 'myvar', read=True, geometry_file=self.gfile1)
-        print x2.lat_name, x2.lon_name
-        print x2.lat
+        print(x2.lat_name, x2.lon_name)
+        print(x2.lat)
         self.assertTrue(np.all(x2.lat == 5.))
         self.assertTrue(np.all(x2.lon == 3.))
 
