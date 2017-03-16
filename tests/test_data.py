@@ -1782,7 +1782,7 @@ class TestData(unittest.TestCase):
 
         # a) same cell size
         r = A.fldstd(apply_weights=True, ddof=0)
-        self.assertAlmostEqual(r, xdat.std(ddof=0), 10)
+        self.assertAlmostEqual(r[0], xdat.std(ddof=0), 10)
 
         #~ r = A.fldstd(apply_weights=True, ddof=1)
         #~ self.assertAlmostEqual(r, xdat.std(ddof=1),10)

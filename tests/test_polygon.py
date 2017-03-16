@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import print_function
+
 """
 This file is part of GEOVAL.
 (c) 2016- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
-from unittest import TestCase
+import sys
+sys.path.append('..')
 import unittest
 
 from geoval.core.data import GeoData
-import scipy as sc
-import matplotlib.pylab as pl
 import numpy as np
-from scipy import stats
-import datetime
-import matplotlib.pylab as plt
-
-from nose.tools import assert_raises
 
 from geoval.polygon import Polygon, Raster
 
@@ -96,7 +93,7 @@ class TestData(unittest.TestCase):
     def test_raster_wrong_latlon(self):
         lon = np.random.random(10)
         lat = np.random.random(10)
-        print lon.ndim
+        print(lon.ndim)
         with self.assertRaises(ValueError):
             R = Raster(lon, lat)
 
@@ -120,14 +117,14 @@ class TestData(unittest.TestCase):
         R.mask = np.zeros(LON.shape)*np.nan
         R._rasterize_single_polygon(P)
 
-        print np.unique(R.mask)
+        print(np.unique(R.mask))
 
         R.mask = np.ma.array(R.mask, mask=np.isnan(R.mask))
 
         u = np.unique(R.mask[~R.mask.mask])
 
-        print R.mask
-        print u
+        print(R.mask)
+        print(u)
 
         self.assertTrue(len(u)==1)
         self.assertTrue(5. in u)
