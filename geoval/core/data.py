@@ -21,12 +21,8 @@ EDITS:
 import os
 import sys
 
-# from statistic import get_significance, ttest_ind
 from .netcdf import NetCDFHandler
 # from polygon import Raster
-
-# commented due to RT Errors
-# from polygon import Polygon as geovalPolygon
 
 # core libraries
 import numpy as np
@@ -41,7 +37,7 @@ import tempfile
 from dateutil import relativedelta
 
 
-from geoval.statistic import get_significance, ttest_ind
+from geoval.statistic import get_significance
 from geoval.polygon import Raster
 from geoval.polygon import Polygon as geovalPolygon
 
@@ -400,7 +396,7 @@ class GeoData(object):
             if self.ndim == 2:  # temporal mean field assumed
                 F.write(self._arr2string(self.data, prefix='timmean'))
             elif self.ndim == 3:
-                for i in xrange(len(self.time)):
+                for i in range(len(self.time)):
                     F.write(
                         self._arr2string(self.data[i, :, :], prefix=str(self.date[i])))
             else:
@@ -468,8 +464,8 @@ class GeoData(object):
         if len(prefix) > 0:
             prefix += sep
 
-        for i in xrange(ny):
-            for j in xrange(nx):
+        for i in range(ny):
+            for j in range(nx):
                 if a.mask[i, j]:  # in case of masked values
                     pass
                 else:
@@ -679,7 +675,7 @@ class GeoData(object):
         start_date = plt.datestr2num(basedate)
         act_date = start_date * 1.
 
-        for i in xrange(int(nmonths)):  # increment months
+        for i in range(int(nmonths)):  # increment months
             d = plt.num2date(act_date)
             # number of days in current month
             ndays = monthrange(d.year, d.month)[1]
@@ -894,7 +890,7 @@ class GeoData(object):
             del tmp1
 
         elif self.data.ndim == 3:
-            for i in xrange(self.nt):
+            for i in range(self.nt):
                 tmp = self.data[i, :, :].copy()
                 tmp[~msk] = np.nan
                 self.data[i, :, :] = tmp[:, :] * 1.
@@ -958,28 +954,28 @@ class GeoData(object):
         yb = msk.sum(axis=1)
 
         j1 = -99
-        for i in xrange(len(xb)):
+        for i in range(len(xb)):
             if j1 > 0:
                 continue
             if (xb[i] > 0) & (j1 == -99):
                 j1 = i
 
         j2 = -99
-        for i in xrange(len(xb) - 1, -1, -1):
+        for i in range(len(xb) - 1, -1, -1):
             if j2 > 0:
                 continue
             if (xb[i] > 0) & (j2 == -99):
                 j2 = i
 
         i1 = -99
-        for i in xrange(len(yb)):
+        for i in range(len(yb)):
             if i1 > 0:
                 continue
             if (yb[i] > 0) & (i1 == -99):
                 i1 = i
 
         i2 = -99
-        for i in xrange(len(yb) - 1, -1, -1):
+        for i in range(len(yb) - 1, -1, -1):
             if i2 > 0:
                 continue
             if (yb[i] > 0) & (i2 == -99):
@@ -1418,7 +1414,7 @@ class GeoData(object):
         #fraction is too small ini the end ??? but CDOs do right ???
 
         T = []
-        for i in xrange(len(years)):
+        for i in range(len(years)):
 
             d = datetime.datetime(int(years[i]),1,1)+relativedelta.relativedelta(days=days[i])
             T.append(d)
@@ -1559,7 +1555,7 @@ class GeoData(object):
             r = np.ones((nt, ny)) * np.nan
             W = np.ones((nt, ny)) * np.nan
 
-            for i in xrange(nt):
+            for i in range(nt):
                 # weighted sum, normalized by valid data why ???
                 r[i] = dat[i, :, :].sum(axis=1) / w[i, :, :].sum(axis=1)
                 W[i] = w[i, :, :].sum(axis=1)
@@ -2363,7 +2359,7 @@ class GeoData(object):
                 self.totalarea = no * 1.
 
                 # 4) itterate over all timesteps and calculate weighting matrix
-                for i in xrange(nt):
+                for i in range(nt):
                     w[i, :, :] /= no[i]
             else:
                 # 2) mask areas that do not contain valid data
@@ -2525,14 +2521,14 @@ class GeoData(object):
                     raise ValueError('need mask for each timestep!')
 
                 if ddof == 0:
-                    for i in xrange(nt):
+                    for i in range(nt):
                         V1 = w[i, :, :].sum()
                         mu = (self.data[i, :, :] * w[i, :, :]).sum() / V1
                         s[i] = (w[i, :, :] * (self.data[i, :, :] - mu)
                                 ** 2.).sum() / V1
                     tmp = np.sqrt(s)
                 elif ddof == 1:
-                    for i in xrange(nt):
+                    for i in range(nt):
                         V1 = w[i, :, :].sum()
                         mu = (self.data[i, :, :] * w[i, :, :]).sum() / V1
                         V2 = np.sum(w[i, :, :] ** 2.)
@@ -2975,8 +2971,8 @@ class GeoData(object):
         elif self.data.ndim == 3:
             r = np.ones_like(self.data) * np.nan
             nt, ny, nx = self.data.shape
-            for i in xrange(ny):  # todo: more efficient implementation
-                for j in xrange(nx):
+            for i in range(ny):  # todo: more efficient implementation
+                for j in range(nx):
                     if msk[i, j]:
                         r[:, i, j] = _runningMeanFast(self.data[:, i, j], N)
                 # ensure that smoothed data is centred in time!
@@ -3024,7 +3020,8 @@ class GeoData(object):
         ----------
         d : GeoData object or Data object
         """
-        for attr, value in self.__dict__.iteritems():
+        
+        for attr, value in self.__dict__.items():
             try:
                 # copy (needed for arrays)
                 cmd = "d." + attr + " = self." + attr + '.copy()'
@@ -3100,7 +3097,7 @@ class GeoData(object):
         else:
             d = self
         if f_elementwise:
-            for i in xrange(len(d.data)):
+            for i in range(len(d.data)):
                 d.data[i, :, :] = d.data[i, :, :] - x.data[:, :]
         else:
             d.data = d.data - x.data
@@ -3127,7 +3124,7 @@ class GeoData(object):
         if np.isscalar(x):
             d.data -= x
         elif x.ndim == 2:  # x is an array
-            for i in xrange(len(self.time)):
+            for i in range(len(self.time)):
                 d.data[i, :, :] -= x[:, :]
         else:
             raise ValueError('Invalid geometry in detrend()')
@@ -3245,7 +3242,7 @@ class GeoData(object):
         if np.shape(d.data) == np.shape(x.data):
             d.data /= x.data
         elif np.shape(d.data[0, :, :]) == np.shape(x.data):
-            for i in xrange(len(self.time)):
+            for i in range(len(self.time)):
                 d.data[i, :, :] /= x.data
         else:
             raise ValueError('Can not handle this geometry in div()')
@@ -3300,7 +3297,7 @@ class GeoData(object):
         if np.shape(d.data) == np.shape(x.data):
             d.data = d.data * x.data
         elif np.shape(d.data[0, :, :]) == np.shape(x.data):
-            for i in xrange(len(self.time)):
+            for i in range(len(self.time)):
                 d.data[i, :, :] = d.data[i, :, :] * x.data
         else:
             raise ValueError('Can not handle this geometry in div()')
@@ -3378,7 +3375,7 @@ class GeoData(object):
 
         print('Calculating correlation ...')
         if method == 'pearson':
-            res = [stats.mstats.linregress(x, dat[:, i]) for i in xrange(n)]
+            res = [stats.mstats.linregress(x, dat[:, i]) for i in range(n)]
             #~ res = np.ones(n)*np.nan
             #~ for i in xrange(n):
                 #~ try:
@@ -3409,7 +3406,7 @@ class GeoData(object):
 
             # this is implemented like this at the moment, as the number of
             # valid data points needs to be > 3
-            for i in xrange(n):
+            for i in range(n):
                 invalid = False
                 if (~x.mask).sum() < 3:
                     invalid = True
@@ -3709,7 +3706,7 @@ class GeoData(object):
         i1 = 0
         i2 = 1  # indices in original data
         f_init = True
-        for i in xrange(nt - 1):
+        for i in range(nt - 1):
             # 1) find start of interpolation period
             if f_init:
                 # do nothing while data coverage not reached yet
@@ -3856,7 +3853,7 @@ class GeoData(object):
 
         if False:
             # slow implementation ...
-            for i in xrange(self.nt):
+            for i in range(self.nt):
                 o.data[i, :, :] = self.data[i, :, :] * x[i]
         else:
             # fast implementation using broadcasting ...
@@ -4012,15 +4009,15 @@ class GeoData(object):
         ret = np.ones_like(self.data) * np.nan
 
         if ret.ndim == 1:
-            for i in xrange(self.time_cycle):
+            for i in range(self.time_cycle):
                 ret[i::self.time_cycle] = self.data[i::self.time_cycle] - \
                     clim[i]
         elif ret.ndim == 2:
-            for i in xrange(self.time_cycle):
+            for i in range(self.time_cycle):
                 ret[i::self.time_cycle, :] = self.data[
                     i::self.time_cycle, :] - clim[i, :]
         elif ret.ndim == 3:
-            for i in xrange(self.time_cycle):
+            for i in range(self.time_cycle):
                 ret[i::self.time_cycle, :, :] = self.data[i::self.time_cycle, :, :] - clim[i, :, :]
         else:
             raise ValueError('Invalid dimension when calculating anomalies')
@@ -4118,7 +4115,7 @@ class GeoData(object):
             mins = np.ones((1, len(vals))) * np.nan
             maxs = np.ones((1, len(vals))) * np.nan
 
-            for i in xrange(len(vals)):
+            for i in range(len(vals)):
                 means[0, i], stds[0, i], sums[0, i], mins[0,
                                                           i], maxs[0, i] = _get_stat(self.data, m, vals[i])
 
@@ -4131,8 +4128,8 @@ class GeoData(object):
             maxs = np.ones((nt, len(vals))) * np.nan
 
             # calculate for each timestep and value the conditional statistic
-            for t in xrange(nt):
-                for i in xrange(len(vals)):
+            for t in range(nt):
+                for i in range(len(vals)):
                     means[t, i], stds[t, i], sums[t, i], mins[t, i], maxs[t, i] = _get_stat(
                         self.data[t, :, :],
                         m, vals[i])
@@ -4148,7 +4145,7 @@ class GeoData(object):
         except:
             thedate = None
 
-        for i in xrange(len(vals)):
+        for i in range(len(vals)):
             id = vals[i]
             res.update(
                 {id: {'mean': means[:, i], 'std': stds[:, i], 'sum': sums[:, i], 'min': mins[:, i],
@@ -4269,7 +4266,7 @@ class GeoData(object):
             print(len(mask), self.data.shape)
             raise ValueError('Inconsistent length of data and mask')
 
-        for i in xrange(len(mask)):
+        for i in range(len(mask)):
             if mask[i]:
                 self.data.mask[i, :, :] = True
 
@@ -4412,14 +4409,14 @@ class GeoData(object):
         if mskvalid.sum() > 0:
             if spearman:
                 res = [stats.mstats.spearmanr(xn[:, i], yn[:, i])
-                       for i in xrange(sum(mskvalid))]
+                       for i in range(sum(mskvalid))]
                 res = np.asarray(res)
                 r = res[:, 0]
                 p = res[:, 1]
                 r[p > pthres] = np.nan
 
             else:  # Pearson product-moment correlation
-                res = [np.ma.corrcoef(xn[:, i], yn[:, i]) for i in xrange(sum(
+                res = [np.ma.corrcoef(xn[:, i], yn[:, i]) for i in range(sum(
                     mskvalid))]  # <<<< as an alternative one could use stats.mstats.linregress ; results are however equal for R-VALUE, but NOT for P-value, here mstats.linregress seems to be buggy!, see unittests
                 res = np.asarray(res)
                 r = res[:, 0, 1]  # correlation coefficient
@@ -4496,19 +4493,19 @@ class GeoData(object):
             slim = np.ones(np.shape(self.data[0:self.time_cycle])) * np.nan
 
         if clim.ndim == 1:
-            for i in xrange(self.time_cycle):
+            for i in range(self.time_cycle):
                 clim[i::self.time_cycle] = self.data[
                     i::self.time_cycle].mean(axis=0)
                 slim[i::self.time_cycle] = self.data[
                     i::self.time_cycle].sum(axis=0)
         elif clim.ndim == 2:
-            for i in xrange(self.time_cycle):
+            for i in range(self.time_cycle):
                 clim[i::self.time_cycle, :] = self.data[
                     i::self.time_cycle, :].mean(axis=0)
                 slim[i::self.time_cycle, :] = self.data[
                     i::self.time_cycle, :].sum(axis=0)
         elif clim.ndim == 3:
-            for i in xrange(self.time_cycle):
+            for i in range(self.time_cycle):
                 clim[i::self.time_cycle, :, :] = self.data[
                     i::self.time_cycle, :, :].mean(axis=0)
                 slim[i::self.time_cycle, :, :] = self.data[
@@ -4527,7 +4524,7 @@ class GeoData(object):
         r.label += ' - climatology'
         r.data = clim
         r.time = []
-        for i in xrange(self.time_cycle):
+        for i in range(self.time_cycle):
             r.time.append(self.time[i])  # use data for the first timesteps
         r.time = np.asarray(r.time)
         r.adjust_time(year=1200)  # set some arbitrary time
