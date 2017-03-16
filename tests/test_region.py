@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 """
 This file is part of GEOVAL.
 (c) 2012- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
+import sys
+sys.path.append('..')
 import unittest
-from geoval import region
 
 from geoval.region import RegionParser
 from geoval.region import RegionPolygon
 from geoval.region import RegionBboxLatLon
 from geoval.region import RegionIndex
 from geoval.region import RegionGeneric
-from nose.tools import assert_raises
 import os
 import numpy as np
 
 
 import tempfile
-import os
 import shapefile
 from geoval.region import RegionShape
 
@@ -146,7 +146,7 @@ class TestRegion(unittest.TestCase):
         lon = np.random.random(10)
         lat = np.random.random(10)
         R = RegionPolygon(111, lon, lat, label='Testregion')
-        for i in xrange(len(lon)):
+        for i in range(len(lon)):
             self.assertEqual(R.lon[i], lon[i])
             self.assertEqual(R.lat[i], lat[i])
         self.assertEqual(111, R.id)
@@ -198,7 +198,7 @@ class TestRegion(unittest.TestCase):
         # try to read some information
         sf = shapefile.Reader(shp_file)
         shapes = sf.shapes()
-        print shapes[0].bbox
+        print(shapes[0].bbox)
 
     def test_RegionShape(self):
         # test to read a shapefile
@@ -206,8 +206,8 @@ class TestRegion(unittest.TestCase):
         RS = RegionShape(shp_file)
         for k in RS.regions.keys():
             r = RS.regions[k]
-            print r.lon
-            print r.lat
+            print(r.lon)
+            print(r.lat)
 
 
 

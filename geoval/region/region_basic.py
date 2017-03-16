@@ -185,7 +185,7 @@ class RegionShape(object):
         id = 1
         shps = sf.shapes()
         recs = sf.records()
-        for i in xrange(len(shps)):
+        for i in range(len(shps)):
             s = shps[i]
             lon = [p[0] for p in s.points]
             lat = [p[1] for p in s.points]
@@ -293,7 +293,10 @@ class RegionParser(object):
         """
         parse a region file that has the structure of a Windows INI file
         """
-        from ConfigParser import SafeConfigParser
+        try:
+            from ConfigParser import SafeConfigParser # python 2
+        except:
+            from configparser import SafeConfigParser  # python 3
         parser = SafeConfigParser()
         parser.read(self.filename)
 
