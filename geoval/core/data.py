@@ -1403,7 +1403,8 @@ class GeoData(object):
         #years = np.asarray(map(int, self.time)).astype('float')
         years = np.asarray([int(t) for t in self.time]).astype('float')
         frac = self.time - years
-        isleap = np.asarray(map(calendar.isleap, years))
+        #isleap = np.asarray(map(calendar.isleap, years))
+        isleap = np.asarray([calendar.isleap(y) for y in years])
         ndays = np.ones_like(years)*365.
         ndays[isleap] = 366.
         days = ndays*frac
