@@ -4,6 +4,10 @@ This file is part of GEOVAL.
 (c) 2012- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
+
+import matplotlib
+matplotlib.use('Agg')
+
 import sys
 sys.path.append('..')
 
