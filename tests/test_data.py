@@ -309,7 +309,7 @@ class TestData(unittest.TestCase):
             r = np.zeros((time_cycle,ny,nx))
             n = np.zeros((time_cycle,ny,nx))
             cnt = 0
-            for i in xrange(nt):
+            for i in range(nt):
                 if cnt % time_cycle == 0:
                     cnt = 0
                 r[cnt,:,:] = r[cnt,:,:] + x.data[i,:,:]
@@ -368,7 +368,7 @@ class TestData(unittest.TestCase):
         b = self.D.copy()
         t=[]
         x = pl.datestr2num('2001-01-15')
-        for i in xrange(20):
+        for i in range(20):
             t.append(x)
             x += 30
         t = np.asarray(t)
@@ -758,21 +758,21 @@ class TestData(unittest.TestCase):
         D = self.D.copy()
         #D._oldtime = True #use old time convention to be compliant with test routines here
         D.adjust_time(day=17)
-        for i in xrange(len(D.time)):
+        for i in range(len(D.time)):
             self.assertEqual(D.num2date(D.time[i]).day, 17)
         D.adjust_time(month=10)
-        for i in xrange(len(D.time)):
+        for i in range(len(D.time)):
             self.assertEqual(D.num2date(D.time[i]).month, 10)
         D.adjust_time(year=2025)
-        for i in xrange(len(D.time)):
+        for i in range(len(D.time)):
             self.assertEqual(D.num2date(D.time[i]).year, 2025)
 
         D.adjust_time(hour=0)
-        for i in xrange(len(D.time)):
+        for i in range(len(D.time)):
             self.assertEqual(D.num2date(D.time[i]).hour, 0)
 
         D.adjust_time(hour=22)
-        for i in xrange(len(D.time)):
+        for i in range(len(D.time)):
             self.assertEqual(D.num2date(D.time[i]).hour, 22)
 
     def test_timstat(self):
@@ -818,13 +818,13 @@ class TestData(unittest.TestCase):
     def test_get_years(self):
         d = self.D.date
         y = self.D._get_years()
-        for i in xrange(self.D.nt):
+        for i in range(self.D.nt):
             self.assertEqual(d[i].year, y[i])
 
     def test_get_months(self):
         d = self.D.date
         y = self.D._get_months()
-        for i in xrange(self.D.nt):
+        for i in range(self.D.nt):
             self.assertEqual(d[i].month, y[i])
 
 
@@ -832,7 +832,7 @@ class TestData(unittest.TestCase):
         ref = {1:[31],2:[28,29],3:31,4:30,5:31,6:30,7:31,8:31,9:30,10:31,11:30,12:31}
         x = self.D.copy()
         days = x._days_per_month()
-        for i in xrange(x.nt):
+        for i in range(x.nt):
             d = x.date[i]
             if d.month == 2:
                 if d.year % 4 == 0:
@@ -2674,11 +2674,11 @@ class TestData(unittest.TestCase):
         x = GeoData(None, None)
         x._init_sample_object(nt=36, ny=100, nx=50)
         tref = []
-        for i in xrange(12): # no leap year
+        for i in range(12): # no leap year
             tref.append(datetime.datetime(2001, i+1, 15))
-        for i in xrange(12):  # leap year
+        for i in range(12):  # leap year
             tref.append(datetime.datetime(2004, i+1, 15))
-        for i in xrange(12):  # special leap year
+        for i in range(12):  # special leap year
             tref.append(datetime.datetime(2000, i+1, 15))
         x.time = x.date2num(tref)
 
@@ -2688,7 +2688,7 @@ class TestData(unittest.TestCase):
         dref += [31,29, 31, 30 ,31 ,30 ,31,31,30,31,30,31]
 
         mlen = x._get_days_per_month()
-        for i in xrange(len(mlen)):
+        for i in range(len(mlen)):
             print(i, len(mlen), len(dref))
             self.assertEqual(mlen[i], dref[i])
 
@@ -2706,7 +2706,7 @@ class TestData(unittest.TestCase):
 
         x.mul_tvec(t, copy=False)
         y = xref.mul_tvec(t, copy=True)
-        for i in xrange(x.nt):
+        for i in range(x.nt):
             self.assertEqual(x.data[i,0,1], xref.data[i,0,1]*t[i])
             self.assertEqual(y.data[i,0,1], xref.data[i,0,1]*t[i])
 
