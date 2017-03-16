@@ -9,6 +9,9 @@ For COPYING and LICENSE details, please refer to the LICENSE file
 MODULE for spatial grid manipulations
 """
 
+import matplotlib
+matplotlib.use('Agg')
+
 import numpy as np
 import matplotlib.delaunay as triang
 #from matplotlib import pylab as pl
