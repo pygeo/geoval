@@ -5,6 +5,10 @@ This file is part of GEOVAL.
 For COPYING and LICENSE details, please refer to the LICENSE file
 """
 
+
+import matplotlib
+matplotlib.use('Agg')
+
 import sys
 sys.path.append('..')
 import unittest
