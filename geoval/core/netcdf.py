@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import print_function
 """
 This file is part of GEOVAL  and edited for use with ESMValTool
 (c) 2016- Alexander Loew
@@ -31,7 +33,7 @@ class NetCDFHandler(object):
         if self.type.lower() == 'netcdf4':
             import netCDF4 as Cdf
         else:
-            print 'Chosen backend: ', self.type.lower()
+            print('Chosen backend: ', self.type.lower())
             raise ValueError('Invalid netCDF backend!')
         self.handler = Cdf
 
@@ -75,7 +77,7 @@ class NetCDFHandler(object):
             self.create_dimension = self.F.createDimension
             self.create_variables = self.F.createVariable
         else:
-            print self.type, format
+            print(self.type, format)
             raise ValueError('Something went wrong!')
 
     def get_variable_keys(self):
