@@ -42,6 +42,7 @@ install:
     # now install package
     - source activate test-environment
     - python setup.py build_ext --inplace
+    - python setup.py build
     - python setup.py install
 
 
@@ -80,6 +81,7 @@ install:
 # - sudo sh compile_extensions.sh
 
 script:
+ - source activate test-environment
  - nosetests 
 
 
