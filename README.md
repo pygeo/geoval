@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/pygeo/geoval.svg?branch=master)](https://travis-ci.org/pygeo/geoval)
+[![Build Status](https://travis-ci.org/pygeo/geoval.svg?branch=dev)](https://travis-ci.org/pygeo/geoval)
+
 # geoval
 
 Geoval is a package that provides a) a data model for geospatial data, b) a lot of functionality to analyize this data, c) plotting library to generate nice looking plots.
