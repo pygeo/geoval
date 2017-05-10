@@ -2398,7 +2398,7 @@ class GeoData(object):
             pass
         else:
             raise ValueError('fldmean currently only supported for 2D/3D data')
-        
+
         if apply_weights:
             # area weighting
             # get weighting matrix for each timestep (taking care of invalid
@@ -2407,7 +2407,7 @@ class GeoData(object):
             # multiply the data with the weighting matrix in memory efficient
             # way
             w *= self.data
-            
+
             if self.data.ndim == 3:
                 w.shape = (len(self.data), -1)
                 tmp = w.sum(axis=1)  # ... gives weighted sum
@@ -4516,9 +4516,12 @@ class GeoData(object):
             raise ValueError('Invalid dimension when calculating climatology')
 
         n = slim / clim
+        clim = np.ma.array(clim,
+                           mask=(np.isnan(clim) | (n < nmin) |
+                                 np.logical_not(
+                                         (np.logical_not(self.data.mask)).
+                                          mean(axis=0))))
         del slim  # number of data taken into account for climatology
-        clim = np.ma.array(
-            clim, mask=(np.isnan(clim) | (n < nmin) | np.isnan(n)))
         del n
 
         # create a data object

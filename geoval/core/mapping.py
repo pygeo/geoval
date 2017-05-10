@@ -223,7 +223,7 @@ class MapPlotGeneric(object):
                 'No projection properties are given! Please modify or choose a different backend!')
 
         the_map = Basemap(ax=self.pax, **proj_prop)
-        xm = self.x.timmean()
+        xm = self.x.timmean(return_data=False)
 
         Z = xm
         lon = self.x.lon
@@ -310,7 +310,7 @@ class MapPlotGeneric(object):
             plot_data_field = False
 
         if plot_data_field:
-            xm = self.x.timmean()
+            xm = self.x.timmean(return_object=False)
             Z = xm
             lon = self.x.lon
             lat = self.x.lat
