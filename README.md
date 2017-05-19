@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/pygeo/geoval.svg?branch=master)](https://travis-ci.org/pygeo/geoval)
 [![Build Status](https://travis-ci.org/pygeo/geoval.svg?branch=dev)](https://travis-ci.org/pygeo/geoval)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/965845c6ea53472f90b7fd5f792028db)](https://www.codacy.com/app/bulli92/geoval?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pygeo/geoval&amp;utm_campaign=Badge_Grade)
 
 # geoval
 
