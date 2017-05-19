@@ -5,9 +5,7 @@ from __future__ import print_function
 This file is part of GEOVAL  and edited for use with ESMValTool
 (c) 2016- Alexander Loew
 For COPYING and LICENSE details, please refer to the LICENSE file
-"""
 
-"""
 EDITS:
 2015-12-17:     - changed .data to .content to avoid Data.data.data to assess values
                 - commented geoval Polygon due to errors!
