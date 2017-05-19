@@ -38,9 +38,8 @@ class TestData(unittest.TestCase):
     def test_convertOGR(self):
         poly = [(150.,20.), (-160.,30.), (-170.,10.), (170.,10.)]
         P = Polygon(3, poly)
-        A = P.convertToOGRPolygon()
-        B = P.convertToOGRPolygon(ensure_positive=True)
-
+        P.convertToOGRPolygon()
+        P.convertToOGRPolygon(ensure_positive=True)
 
     def test_shift(self):
         poly3 = [(150.,20.), (-160.,30.), (-170.,10.), (170.,10.)]
@@ -73,8 +72,6 @@ class TestData(unittest.TestCase):
 
 
     def test_polygon_min_max(self):
-        x = 1
-        y = 1
         poly = [(-5,0), (2,0), (2,2), (0,6)]
         P = Polygon(1, poly)
 
@@ -88,7 +85,7 @@ class TestData(unittest.TestCase):
         lon = np.random.random((10,20))
         lat = np.random.random((11,20))
         with self.assertRaises(ValueError):
-            R = Raster(lon, lat)
+            Raster(lon, lat)
 
     def test_raster_wrong_latlon(self):
         lon = np.random.random(10)

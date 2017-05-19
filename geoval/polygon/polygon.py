@@ -193,7 +193,7 @@ class Raster(object):
             pool = multiprocessing.Pool(processes=nproc)
             the_args = itertools.izip(itertools.repeat(self.lon, N), itertools.repeat(
                 self.lat, N), range(len(polygons)), itertools.repeat(method, N))
-            r = pool.map(argument_mapper_rasterize, the_args)
+            pool.map(argument_mapper_rasterize, the_args)
             pool.close()
 
         self.mask = np.ma.array(THE_MASK, mask=np.isnan(THE_MASK))
