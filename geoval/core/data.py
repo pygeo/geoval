@@ -4735,7 +4735,6 @@ class GeoData(object):
                 if nx is not None:
                     raise ValueError(
                         'When only timeseries is provided, then nx and ny need to be None!')
-                    data
                 else:
                     data = np.random.random(nt)
             else:
